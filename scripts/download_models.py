@@ -35,17 +35,32 @@ def sha256(path: Path) -> str:
 
 
 def download_model(metadata: dict[str, str], destination: Path) -> str:
-    """Download one model atomically and return its digest."""
+    """Download one model atomically, validating its declared SHA-256 when available."""
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.exists():
-        return sha256(destination)
+        digest = sha256(destination)
+        _validate_digest(metadata, digest, destination)
+        return digest
 
-    with tempfile.NamedTemporaryFile(dir=destination.parent, delete=False) as temporary_file:
-        temporary_path = Path(temporary_file.name)
-        with urlopen(metadata["url"]) as response:
-            shutil.copyfileobj(response, temporary_file)
-    temporary_path.replace(destination)
-    return sha256(destination)
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=destination.parent, delete=False) as temporary_file:
+            temporary_path = Path(temporary_file.name)
+            with urlopen(metadata["url"]) as response:
+                shutil.copyfileobj(response, temporary_file)
+        digest = sha256(temporary_path)
+        _validate_digest(metadata, digest, temporary_path)
+        temporary_path.replace(destination)
+        return digest
+    finally:
+        if temporary_path is not None and temporary_path.exists():
+            temporary_path.unlink()
+
+
+def _validate_digest(metadata: dict[str, str], actual: str, path: Path) -> None:
+    expected = metadata.get("sha256")
+    if expected and actual.lower() != expected.lower():
+        raise ValueError(f"SHA-256 mismatch for {path}: expected {expected}, received {actual}.")
 
 
 def parse_arguments() -> argparse.Namespace:
