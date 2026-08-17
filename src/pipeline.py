@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
@@ -76,7 +77,7 @@ class VehicleAnalysisPipeline:
             "model_domain": _required_string(model, "domain"),
             "confidence": float(model["confidence"]),
             "image_size": int(model["imgsz"]),
-            "device": str(runtime.get("device", "auto")),
+            "device": os.getenv("DEVICE", str(runtime.get("device", "auto"))),
         }
         sahi_enabled = bool(sahi.get("enabled", False))
         detector: Detector

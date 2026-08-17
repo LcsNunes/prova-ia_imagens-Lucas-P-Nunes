@@ -48,3 +48,34 @@ def test_pipeline_fails_with_helpful_message_when_weight_is_missing(tmp_path: Pa
 
     with pytest.raises(FileNotFoundError, match="download_models"):
         VehicleAnalysisPipeline.from_config(configuration, tmp_path)
+
+
+def test_pipeline_device_environment_overrides_yaml(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    model_path = tmp_path / "models" / "weight.pt"
+    model_path.parent.mkdir()
+    model_path.write_bytes(b"weight placeholder")
+    received_options: dict[str, object] = {}
+
+    class CapturingDetector:
+        def __init__(self, **options: object) -> None:
+            received_options.update(options)
+
+    monkeypatch.setattr("src.pipeline.YoloVehicleDetector", CapturingDetector)
+    monkeypatch.setenv("DEVICE", "cuda:0")
+    configuration = {
+        "model": {
+            "name": "weight.pt",
+            "domain": "aerial",
+            "confidence": 0.25,
+            "imgsz": 640,
+        },
+        "runtime": {"device": "cpu"},
+        "sahi": {"enabled": False},
+        "roads": {},
+    }
+
+    VehicleAnalysisPipeline.from_config(configuration, tmp_path)
+
+    assert received_options["device"] == "cuda:0"
