@@ -21,8 +21,8 @@ evaluation:
   iou_threshold: 0.50
 
 roads:
-  hsv_lower: [0, 0, 55]
-  hsv_upper: [179, 75, 210]
+  hsv_lower: [5, 35, 45]
+  hsv_upper: [35, 95, 190]
   kernel_size: 7
   min_area: 1500
 
