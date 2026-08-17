@@ -9,6 +9,9 @@ WORKDIR /app
 
 COPY requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN apt-get update \
+    && apt-get install --no-install-recommends --yes libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY configs ./configs
 COPY scripts ./scripts
