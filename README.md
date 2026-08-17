@@ -1,6 +1,209 @@
 # Drone vehicle inspection
 
-Practical computer-vision assessment for vehicle detection in a drone image.
+Prova pratica de visao computacional para detectar e contar veiculos em uma imagem aerea capturada por drone. A entrega prioriza a deteccao de veiculos; a malha viaria e um recurso visual secundario, implementado de forma simples com OpenCV.
 
-The implementation, experiments, results, and execution instructions will be documented
-incrementally as each phase is validated.
+## Visao geral
+
+A aplicacao recebe uma imagem, valida seu conteudo, executa deteccao sincrona, destaca a regiao provavel de via e devolve as duas visualizacoes. O detector final foi escolhido por experimentos controlados, nao por suposicao:
+
+| Configuracao final | Valor |
+| --- | --- |
+| Modelo | `yolo11n-obb.pt` treinado em DOTA v1 |
+| Ontologia da aplicacao | `vehicle` |
+| Confidence | `0.25` |
+| Inferencia | SAHI, fatias de 512 px e overlap de 20% |
+| Dispositivo observado | NVIDIA GeForce RTX 5060 8 GB, CUDA 12.8 |
+| Resultado controlado | F1 `0.989`, recall `1.000`, erro absoluto de contagem `1` |
+
+O resultado acima e valido para a imagem da prova e para o ground truth revisado deste repositorio. Ele nao deve ser interpretado como medida de generalizacao para novas cidades, cameras ou altitudes.
+
+## Problema e estrategia
+
+A imagem original, extraida do PDF da prova, mede 2048 x 1534 px. Veiculos ocupam poucos pixels e podem estar orientados de formas variadas. Por isso foram comparados:
+
+1. YOLO11 generalista pre-treinado em COCO;
+2. YOLO11-OBB especializado em imagens aereas/DOTA;
+3. inferencia normal e tiled inference com SAHI.
+
+As classes COCO `car`, `motorcycle`, `bus` e `truck`, e as classes aereas `small vehicle` e `large vehicle`, sao normalizadas para o unico conceito de negocio `vehicle`. A avaliacao mede se o veiculo foi localizado, e nao se carro, onibus ou caminhao foram classificados com a classe fina correta.
+
+## Arquitetura
+
+```text
+browser -> FastAPI -> validacao de imagem -> pipeline sincrono
+                                             |-> detector YOLO / SAHI
+                                             |-> destaque HSV + morfologia
+                                             `-> overlays JPEG + metadados
+```
+
+```text
+src/
+├── api/            # FastAPI, contrato e validacao de upload
+├── detection/      # adaptadores YOLO, SAHI, ontologia e deduplicacao
+├── evaluation/     # ground truth, matching IoU, metricas e benchmark
+├── roads/          # destaque deliberadamente simples com OpenCV
+├── visualization/  # caixas e imagens RGB
+├── web/            # HTML, CSS e JavaScript servidos pelo FastAPI
+├── config.py
+├── logging_config.py
+└── pipeline.py
+```
+
+O notebook e o laboratorio de decisao; o codigo em `src/` representa a solucao escolhida.
+
+## Instalacao e execucao local
+
+Requer Python 3.10. Em Windows PowerShell:
+
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python scripts/download_models.py --model aerial_yolo11n_obb
+python -m uvicorn src.api.app:app --reload
+```
+
+Abra `http://127.0.0.1:8000`. A pagina permite upload, mostra a imagem original, as deteccoes, a contagem, modelo, SAHI, confidence, tempo e a camada secundaria de via.
+
+O padrao `DEVICE=auto` usa CUDA quando o PyTorch a encontra. Para forcar CPU, use `DEVICE=cpu`; para forcar a RTX, use `DEVICE=cuda:0`.
+
+```powershell
+$env:DEVICE = "cuda:0"
+$env:LOG_LEVEL = "INFO"
+python -m uvicorn src.api.app:app --reload
+```
+
+## Modelos
+
+Pesos nao sao versionados. O manifesto [`configs/model_registry.yaml`](configs/model_registry.yaml) registra nome, release, URL e SHA-256; o script valida o digest quando o peso e obtido ou reutilizado.
+
+```powershell
+# Baseline e variantes usadas nos experimentos
+python scripts/download_models.py --model coco_yolo11n
+python scripts/download_models.py --model aerial_yolo11n_obb
+python scripts/download_models.py --model aerial_yolo11s_obb
+python scripts/download_models.py --model aerial_yolo11m_obb
+```
+
+## API
+
+| Metodo e rota | Uso |
+| --- | --- |
+| `GET /api/health` | verifica se o pipeline foi carregado |
+| `POST /api/analyses` | recebe um campo multipart `image` e devolve a analise |
+
+`POST /api/analyses` aceita JPEG, PNG e WEBP apos validar os bytes reais do arquivo, com limite configuravel de tamanho e pixels. A resposta possui `vehicle_count`, `model_name`, `sahi_enabled`, `confidence`, `inference_ms`, `detections_image` e `roads_image`. As duas imagens sao JPEGs em data URL para a interface usar sem gravar uploads no disco.
+
+Exemplo:
+
+```powershell
+curl.exe -X POST http://127.0.0.1:8000/api/analyses -F "image=@data/raw/drone_scene.jpg"
+```
+
+Erros de upload retornam `422` com um codigo e mensagem segura; indisponibilidade do modelo retorna `503`. A inferencia e propositalmente sincrona, sem filas, Redis ou workers.
+
+## Ground truth e metricas
+
+[`data/annotations/ground_truth.json`](data/annotations/ground_truth.json) contem 46 caixas, somente com a categoria `vehicle`, alem de dimensoes e SHA-256 da imagem. O fluxo no notebook permite criar ou revisar caixas manualmente com `RectangleSelector`.
+
+O arquivo atual foi iniciado por pre-anotacoes do modelo aereo e revisado manualmente. Essa escolha acelera a prova, mas e uma fonte potencial de viés; por transparencia, ela consta no proprio JSON e deve ser substituida por anotacao independente em uma avaliacao de produto.
+
+Predicoes e ground truth sao pareados de forma gulosa por score quando `IoU >= 0.50`. Alem de `Absolute Count Error`, o projeto calcula TP, FP, FN, precision, recall e F1, impedindo que falsos positivos e falsos negativos se cancelem apenas na contagem.
+
+## Experimentos e resultados
+
+Todos os resultados detalhados e metadados do ambiente estao em [`outputs/metrics/benchmark_results.json`](outputs/metrics/benchmark_results.json). As medidas usaram a mesma imagem, o mesmo ground truth, `imgsz=1024`, FP32, RTX 5060, um warm-up e tres repeticoes cronometradas; a tabela reporta a mediana. Arquivos gerados grandes continuam ignorados pelo Git.
+
+### Nano x Small x Medium
+
+Nesta etapa as demais variaveis foram mantidas fixas e SAHI ficou desligado.
+
+| Modelo aereo | TP | FP | FN | Precision | Recall | F1 | Count error | Mediana | Pico GPU |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| YOLO11n-OBB | 44 | 3 | 2 | 0.936 | 0.957 | **0.946** | **1** | **45.3 ms** | **88.3 MB** |
+| YOLO11s-OBB | 43 | 5 | 3 | 0.896 | 0.935 | 0.915 | 2 | 49.1 ms | 161.5 MB |
+| YOLO11m-OBB | 42 | 6 | 4 | 0.875 | 0.913 | 0.894 | 2 | 49.9 ms | 312.0 MB |
+
+O Nano venceu os tres criterios observados nesta cena: F1, erro de contagem e custo. Small nao foi escolhido por padrao; seus dados ficaram piores aqui.
+
+### Benchmark principal 2 x 2
+
+| Dominio / inferencia | TP | FP | FN | Precision | Recall | F1 | Count error | Mediana |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| COCO normal | 0 | 1 | 46 | 0.000 | 0.000 | 0.000 | 45 | **39.6 ms** |
+| COCO + SAHI 512 | 0 | 4 | 46 | 0.000 | 0.000 | 0.000 | 42 | 663.4 ms |
+| Aerial/DOTA normal | 44 | 3 | 2 | 0.936 | 0.957 | 0.946 | **1** | 47.1 ms |
+| Aerial/DOTA + SAHI 512 | **46** | **1** | **0** | **0.979** | **1.000** | **0.989** | **1** | 753.6 ms |
+
+A especializacao aerea foi decisiva nesta imagem. SAHI aumentou F1 de 0.946 para 0.989 e eliminou os FNs, com custo material de latencia. A configuracao final favorece qualidade de deteccao, conforme a prioridade do desafio.
+
+### Confidence e tamanho da fatia
+
+Para o Nano aereo com SAHI:
+
+| Confidence | TP | FP | FN | F1 | Count error |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 0.15 | 46 | 4 | 0 | 0.958 | 4 |
+| **0.25** | **46** | **1** | **0** | **0.989** | **1** |
+| 0.35 | 42 | 1 | 4 | 0.944 | 3 |
+| 0.50 | 39 | 0 | 7 | 0.918 | 7 |
+
+| Fatias | TP | FP | FN | F1 | Count error | Mediana |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| **512** | **46** | **1** | **0** | **0.989** | **1** | 792.8 ms |
+| 640 | 43 | 4 | 3 | 0.925 | 1 | **603.1 ms** |
+
+Escolhi `confidence=0.25` e fatia 512. Isso nao e um grid search nem uma regra universal: foi uma verificacao pequena para entender o comportamento da cena, e devera ser revalidado em imagens independentes.
+
+## Malha viaria
+
+[`src/roads/opencv_road.py`](src/roads/opencv_road.py) usa HSV, threshold, fechamento/abertura morfologica, filtros por componentes conectados e overlay semitransparente. Ela indica uma **regiao provavel de pavimento/via**, nao uma segmentacao semantica de estrada.
+
+A limitacao e intencional: tempo e profundidade tecnica foram concentrados na deteccao de veiculos. Iluminacao, sombras, material da pista, telhados com cor semelhante, clima e cameras diferentes podem degradar o resultado. Uma proxima versao usaria segmentacao treinada e imagens variadas para avaliar IoU de via.
+
+## Testes e qualidade
+
+```powershell
+python -m pytest
+ruff check .
+ruff format --check .
+```
+
+Os testes cobrem ontologia, IoU e matching, metricas, deduplicacao, ground truth, downloads com checksum, OpenCV, pipeline, validacao de imagem e um smoke test da API. O `pyproject.toml` exige ao menos 80% de cobertura e o pipeline de CI executa lint, formatacao, pytest com coverage e Docker build.
+
+## Docker
+
+O projeto usa um unico container FastAPI. Primeiro baixe o peso final para o volume local e depois suba a aplicacao:
+
+```powershell
+docker compose build
+docker compose run --rm app python scripts/download_models.py --model aerial_yolo11n_obb
+docker compose up
+```
+
+Abra `http://127.0.0.1:8000`. Para expor a GPU para o Docker Desktop com NVIDIA Container Toolkit configurado:
+
+```powershell
+docker compose run --rm --gpus all --service-ports -e DEVICE=cuda:0 app
+```
+
+Sem GPU exposta ao container, `DEVICE=auto` faz fallback para CPU. O compose nao obriga GPU, o que preserva a demonstracao em maquinas sem NVIDIA.
+
+## CI
+
+O workflow [`ci.yml`](.github/workflows/ci.yml) e executado em push para `develop` e `main`, e em pull request para `main`. Ele faz checkout, instala Python 3.10 e dependencias, roda Ruff, pytest/coverage e build da imagem Docker.
+
+## Limitacoes e proximos passos
+
+- Ha apenas uma imagem de avaliacao; resultados nao representam uma distribuicao completa.
+- O ground truth atual teve pre-anotacao do modelo aereo, apesar da revisao manual.
+- OBB e comparado como bounding box alinhada aos eixos para manter uma unica metrica de matching; uma evolucao pode avaliar IoU orientado.
+- A inferencia SAHI melhora recall, mas aumenta a latencia por imagem.
+- A camada de vias e baseada em cor, nao em segmentacao semantica.
+- Proximas evolucoes: ground truth independente para novas imagens, conjunto separado de validacao/teste, VisDrone ou fine-tuning leve se houver dados, avaliacao de OBB, e somente depois arquitetura AWS, filas e monitoramento.
+
+## Uso de IA
+
+Este repositorio registra uso de Codex/IA como apoio para scaffolding, sugestoes de implementacao, testes e documentacao. As decisoes tecnicas foram revisadas pelo desenvolvedor; os experimentos foram executados localmente na RTX 5060 e os resultados aqui listados foram registrados a partir dessas execucoes. O codigo e as anotacoes devem ser revisados manualmente pelo desenvolvedor antes da entrega final.
+

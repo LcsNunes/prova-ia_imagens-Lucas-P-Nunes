@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Inspecao de veiculos em imagens aereas" />
+    <title>Vista | Inspecao Aerea</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='app.css') }}" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="masthead">
+        <div>
+          <p class="eyebrow">Computer vision / Drone imagery</p>
+          <h1>Vista <span>de cima</span></h1>
+        </div>
+        <div class="status"><i></i><span id="api-status">API verificando</span></div>
+      </header>
+
+      <section class="control-panel" aria-label="Enviar imagem para analise">
+        <label class="dropzone" for="image-input" id="dropzone">
+          <input id="image-input" type="file" accept="image/jpeg,image/png,image/webp" />
+          <span class="upload-mark">+</span>
+          <span><strong>Escolha uma imagem aerea</strong><small>JPEG, PNG ou WEBP — ate 12 MB</small></span>
+        </label>
+        <button id="analyze-button" type="button" disabled>Analisar imagem <span>↗</span></button>
+      </section>
+
+      <section class="summary" aria-live="polite">
+        <article><span>Veiculos identificados</span><strong id="vehicle-count">—</strong></article>
+        <article><span>Modelo</span><strong id="model-name">—</strong></article>
+        <article><span>Inferencia</span><strong id="inference-time">—</strong></article>
+        <article><span>SAHI</span><strong id="sahi-status">—</strong></article>
+      </section>
+
+      <p class="message" id="message">Envie uma imagem para iniciar a inspecao.</p>
+
+      <section class="visual-grid" aria-label="Resultados visuais">
+        <figure class="image-card">
+          <figcaption><span>01</span> Original</figcaption>
+          <div class="image-stage"><img id="original-image" alt="Imagem original enviada" /></div>
+        </figure>
+        <figure class="image-card">
+          <figcaption><span>02</span> Veiculos detectados</figcaption>
+          <div class="image-stage"><img id="detections-image" alt="Veiculos detectados" /></div>
+        </figure>
+      </section>
+
+      <section class="road-panel">
+        <div><p class="eyebrow">Camada secundaria</p><h2>Regiao provavel de via</h2></div>
+        <button id="road-toggle" class="text-button" type="button" disabled>Mostrar malha viaria</button>
+      </section>
+      <figure class="road-image image-card is-hidden" id="road-card">
+        <div class="image-stage"><img id="roads-image" alt="Regiao provavel de estrada" /></div>
+      </figure>
+    </main>
+    <script src="{{ url_for('static', path='app.js') }}" defer></script>
+  </body>
+</html>

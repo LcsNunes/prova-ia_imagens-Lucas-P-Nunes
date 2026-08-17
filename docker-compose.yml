@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      APP_PORT: 8000
+      DEVICE: ${DEVICE:-auto}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - ./models:/app/models

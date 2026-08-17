@@ -1,0 +1,31 @@
+model:
+  name: yolo11n-obb.pt
+  registry_key: aerial_yolo11n_obb
+  source: ultralytics-dotav1
+  domain: aerial
+  confidence: 0.25
+  imgsz: 1024
+  nms_iou: 0.70
+
+runtime:
+  device: auto
+  half: false
+
+sahi:
+  enabled: true
+  slice_size: 512
+  overlap: 0.20
+  merge_iou: 0.50
+
+evaluation:
+  iou_threshold: 0.50
+
+roads:
+  hsv_lower: [5, 35, 45]
+  hsv_upper: [35, 95, 190]
+  kernel_size: 7
+  min_area: 1500
+
+api:
+  max_upload_mb: 12
+  max_pixels: 20000000

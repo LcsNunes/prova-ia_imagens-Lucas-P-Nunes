@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "image": {
+    "path": "data/raw/drone_scene.jpg",
+    "width": 2048,
+    "height": 1534,
+    "sha256": "9660e2edaabb874e0e03d0dd0ee5d33f969daa18034a23b78ca1d5d81a13d298"
+  },
+  "ground_truth": {
+    "count": 46,
+    "annotation_method": "model_assisted_preannotations_manually_reviewed",
+    "matching_iou_threshold": 0.5
+  },
+  "environment": {
+    "device": "NVIDIA GeForce RTX 5060",
+    "torch": "2.9.1+cu128",
+    "cuda": "12.8",
+    "precision": "FP32",
+    "measurement": "one warm-up followed by three timed repetitions; median reported"
+  },
+  "model_size_benchmark": [
+    {
+      "name": "aerial_n_normal",
+      "model": "yolo11n-obb.pt",
+      "predicted_count": 47,
+      "true_positives": 44,
+      "false_positives": 3,
+      "false_negatives": 2,
+      "precision": 0.9361702128,
+      "recall": 0.9565217391,
+      "f1": 0.9462365591,
+      "absolute_count_error": 1,
+      "median_inference_ms": 45.2933,
+      "peak_gpu_memory_mb": 88.2856
+    },
+    {
+      "name": "aerial_s_normal",
+      "model": "yolo11s-obb.pt",
+      "predicted_count": 48,
+      "true_positives": 43,
+      "false_positives": 5,
+      "false_negatives": 3,
+      "precision": 0.8958333333,
+      "recall": 0.9347826087,
+      "f1": 0.914893617,
+      "absolute_count_error": 2,
+      "median_inference_ms": 49.0828,
+      "peak_gpu_memory_mb": 161.5044
+    },
+    {
+      "name": "aerial_m_normal",
+      "model": "yolo11m-obb.pt",
+      "predicted_count": 48,
+      "true_positives": 42,
+      "false_positives": 6,
+      "false_negatives": 4,
+      "precision": 0.875,
+      "recall": 0.9130434783,
+      "f1": 0.8936170213,
+      "absolute_count_error": 2,
+      "median_inference_ms": 49.903,
+      "peak_gpu_memory_mb": 311.9668
+    }
+  ],
+  "controlled_2x2_benchmark": [
+    {
+      "name": "coco_normal",
+      "predicted_count": 1,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 46,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "absolute_count_error": 45,
+      "median_inference_ms": 39.6079,
+      "peak_gpu_memory_mb": 109.0581
+    },
+    {
+      "name": "coco_sahi_512",
+      "predicted_count": 4,
+      "true_positives": 0,
+      "false_positives": 4,
+      "false_negatives": 46,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "absolute_count_error": 42,
+      "median_inference_ms": 663.4431,
+      "peak_gpu_memory_mb": 122.9341
+    },
+    {
+      "name": "aerial_normal",
+      "predicted_count": 47,
+      "true_positives": 44,
+      "false_positives": 3,
+      "false_negatives": 2,
+      "precision": 0.9361702128,
+      "recall": 0.9565217391,
+      "f1": 0.9462365591,
+      "absolute_count_error": 1,
+      "median_inference_ms": 47.1016,
+      "peak_gpu_memory_mb": 119.2832
+    },
+    {
+      "name": "aerial_sahi_512",
+      "predicted_count": 47,
+      "true_positives": 46,
+      "false_positives": 1,
+      "false_negatives": 0,
+      "precision": 0.9787234043,
+      "recall": 1.0,
+      "f1": 0.9892473118,
+      "absolute_count_error": 1,
+      "median_inference_ms": 753.6024,
+      "peak_gpu_memory_mb": 133.8931
+    }
+  ],
+  "threshold_experiment": [
+    {"confidence": 0.15, "predicted_count": 50, "true_positives": 46, "false_positives": 4, "false_negatives": 0, "precision": 0.92, "recall": 1.0, "f1": 0.9583333333, "absolute_count_error": 4, "median_inference_ms": 770.7181, "peak_gpu_memory_mb": 103.4917},
+    {"confidence": 0.25, "predicted_count": 47, "true_positives": 46, "false_positives": 1, "false_negatives": 0, "precision": 0.9787234043, "recall": 1.0, "f1": 0.9892473118, "absolute_count_error": 1, "median_inference_ms": 764.8943, "peak_gpu_memory_mb": 112.585},
+    {"confidence": 0.35, "predicted_count": 43, "true_positives": 42, "false_positives": 1, "false_negatives": 4, "precision": 0.976744186, "recall": 0.9130434783, "f1": 0.9438202247, "absolute_count_error": 3, "median_inference_ms": 757.7954, "peak_gpu_memory_mb": 102.4902},
+    {"confidence": 0.5, "predicted_count": 39, "true_positives": 39, "false_positives": 0, "false_negatives": 7, "precision": 1.0, "recall": 0.847826087, "f1": 0.9176470588, "absolute_count_error": 7, "median_inference_ms": 741.322, "peak_gpu_memory_mb": 112.585}
+  ],
+  "slice_size_experiment": [
+    {"slice_size": 512, "predicted_count": 47, "true_positives": 46, "false_positives": 1, "false_negatives": 0, "precision": 0.9787234043, "recall": 1.0, "f1": 0.9892473118, "absolute_count_error": 1, "median_inference_ms": 792.7927, "peak_gpu_memory_mb": 122.6797},
+    {"slice_size": 640, "predicted_count": 47, "true_positives": 43, "false_positives": 4, "false_negatives": 3, "precision": 0.914893617, "recall": 0.9347826087, "f1": 0.9247311828, "absolute_count_error": 1, "median_inference_ms": 603.0775, "peak_gpu_memory_mb": 132.7744}
+  ],
+  "selection": {
+    "model": "yolo11n-obb.pt",
+    "confidence": 0.25,
+    "sahi_enabled": true,
+    "slice_size": 512,
+    "overlap": 0.2,
+    "reason": "Best observed F1 and recall in this controlled single-image experiment, at a material latency cost relative to normal inference."
+  }
+}
