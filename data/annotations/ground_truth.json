@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "image": {
+    "path": "data/raw/drone_scene.jpg",
+    "width": 2048,
+    "height": 1534,
+    "sha256": "9660e2edaabb874e0e03d0dd0ee5d33f969daa18034a23b78ca1d5d81a13d298"
+  },
+  "annotations": []
+}
