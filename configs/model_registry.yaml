@@ -13,7 +13,9 @@ models:
     filename: yolo11s-obb.pt
     release: ultralytics-assets-v8.4.0
     url: https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11s-obb.pt
+    sha256: 43fa63102922e0701501241b307420d24fc55e080816888b18bf8c6f96b1a45a
   aerial_yolo11m_obb:
     filename: yolo11m-obb.pt
     release: ultralytics-assets-v8.4.0
     url: https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11m-obb.pt
+    sha256: 41832a4349c08190335bbc11a8e64726750702eb49cf09abb262bc394a13498c

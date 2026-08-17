@@ -26,6 +26,7 @@ outputs/roads/*
 outputs/comparisons/*
 outputs/metrics/*
 !outputs/**/.gitkeep
+!outputs/metrics/benchmark_results.json
 
 # OS and editor files
 .DS_Store

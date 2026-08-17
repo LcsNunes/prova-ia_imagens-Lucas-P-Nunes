@@ -18,6 +18,7 @@ jupyter==1.1.1
 matplotlib>=3.8,<4.0
 ipympl>=0.9,<1.0
 PyMuPDF>=1.24,<2.0
+pandas>=2.2,<3.0
 
 # Quality
 pytest==8.4.2
