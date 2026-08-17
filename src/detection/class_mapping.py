@@ -11,6 +11,8 @@ COCO_VEHICLE_CLASSES = {
 AERIAL_VEHICLE_CLASSES = {
     "small-vehicle": "small_vehicle",
     "large-vehicle": "large_vehicle",
+    "small vehicle": "small_vehicle",
+    "large vehicle": "large_vehicle",
 }
 
 

@@ -10,6 +10,8 @@ from src.detection.class_mapping import normalize_vehicle_class, vehicle_size_gr
         ("coco", "truck", "large_vehicle"),
         ("aerial", "small-vehicle", "small_vehicle"),
         ("aerial", "large-vehicle", "large_vehicle"),
+        ("aerial", "small vehicle", "small_vehicle"),
+        ("aerial", "large vehicle", "large_vehicle"),
     ],
 )
 def test_vehicle_classes_share_common_ontology(
