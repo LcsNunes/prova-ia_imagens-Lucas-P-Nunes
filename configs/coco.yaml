@@ -1,0 +1,18 @@
+model:
+  name: yolo11n.pt
+  source: ultralytics-coco
+  confidence: 0.25
+  imgsz: 1024
+  nms_iou: 0.70
+
+runtime:
+  device: auto
+  half: false
+
+sahi:
+  enabled: false
+  slice_size: 512
+  overlap: 0.20
+
+evaluation:
+  iou_threshold: 0.50

@@ -1,0 +1,21 @@
+model:
+  variants:
+    - yolo11n-obb.pt
+    - yolo11s-obb.pt
+    - yolo11m-obb.pt
+  source: ultralytics-dotav1
+  confidence: 0.25
+  imgsz: 1024
+  nms_iou: 0.70
+
+runtime:
+  device: auto
+  half: false
+
+sahi:
+  enabled: false
+  slice_size: 512
+  overlap: 0.20
+
+evaluation:
+  iou_threshold: 0.50
