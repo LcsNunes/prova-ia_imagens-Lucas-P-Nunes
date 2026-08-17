@@ -14,6 +14,7 @@ os.environ.setdefault("YOLO_CONFIG_DIR", str(Path(__file__).resolve().parents[2]
 
 from src.detection.base import Detection, OrientedBox
 from src.detection.class_mapping import normalize_vehicle_class
+from src.detection.postprocessing import suppress_vehicle_duplicates
 
 YOLO = import_module("ultralytics").YOLO
 
@@ -62,11 +63,12 @@ class YoloVehicleDetector:
             device=self.device,
             verbose=False,
         )[0]
-        return (
+        detections = (
             self._extract_oriented(result)
             if result.obb is not None
             else self._extract_axis_aligned(result)
         )
+        return suppress_vehicle_duplicates(detections)
 
     def _extract_axis_aligned(self, result: object) -> list[Detection]:
         boxes = result.boxes
