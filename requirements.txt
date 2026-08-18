@@ -14,13 +14,14 @@ uvicorn[standard]==0.41.0
 python-multipart>=0.0.20,<1.0.0
 Jinja2>=3.1,<4.0
 
-# Experiment notebook
+# Notebook and neural road segmentation
 jupyter==1.1.1
 matplotlib>=3.8,<4.0
 ipympl>=0.9,<1.0
 PyMuPDF>=1.24,<2.0
 pandas>=2.2,<3.0
 transformers>=4.46,<5.0
+huggingface-hub>=0.34,<1.0
 scipy>=1.14,<2.0
 
 # Quality

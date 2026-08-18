@@ -19,3 +19,8 @@ models:
     release: ultralytics-assets-v8.4.0
     url: https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo11m-obb.pt
     sha256: 41832a4349c08190335bbc11a8e64726750702eb49cf09abb262bc394a13498c
+
+road_models:
+  mask2former_satellite:
+    repository: mfaytin/mask2former-satellite
+    revision: 558c4959866ddd8dca42c13d24e49ca3e12bb71e

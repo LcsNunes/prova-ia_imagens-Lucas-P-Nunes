@@ -20,5 +20,9 @@ class AnalysisResponse(BaseModel):
     sahi_enabled: bool
     confidence: float = Field(ge=0, le=1)
     inference_ms: float = Field(ge=0)
+    vehicle_inference_ms: float = Field(ge=0)
+    road_inference_ms: float = Field(ge=0)
+    road_method: str
     detections_image: str
+    combined_image: str
     roads_image: str

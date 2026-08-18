@@ -21,6 +21,13 @@ evaluation:
   iou_threshold: 0.50
 
 roads:
+  method: mask2former
+  model_id: mfaytin/mask2former-satellite
+  revision: 558c4959866ddd8dca42c13d24e49ca3e12bb71e
+  road_class_id: 3
+  cache_dir: cache/huggingface
+  overlay_color: [242, 107, 56]
+  opacity: 0.40
   hsv_lower: [5, 35, 45]
   hsv_upper: [35, 95, 190]
   kernel_size: 7

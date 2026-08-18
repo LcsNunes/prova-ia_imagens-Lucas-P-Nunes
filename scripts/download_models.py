@@ -10,10 +10,12 @@ from pathlib import Path
 from urllib.request import urlopen
 
 import yaml
+from huggingface_hub import snapshot_download
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_REGISTRY = ROOT / "configs" / "model_registry.yaml"
 DEFAULT_MODELS_DIR = ROOT / "models"
+DEFAULT_CACHE_DIR = ROOT / "cache" / "huggingface"
 
 
 def read_registry(path: Path) -> dict[str, dict[str, str]]:
@@ -23,6 +25,15 @@ def read_registry(path: Path) -> dict[str, dict[str, str]]:
     if not isinstance(models, dict):
         raise ValueError("Model registry must contain a 'models' mapping.")
     return models
+
+
+def read_road_registry(path: Path) -> dict[str, dict[str, str]]:
+    """Load optional Hugging Face road-segmentation artifacts from the same manifest."""
+    payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+    road_models = payload.get("road_models", {}) if isinstance(payload, dict) else {}
+    if not isinstance(road_models, dict):
+        raise ValueError("Model registry key 'road_models' must be a mapping when present.")
+    return road_models
 
 
 def sha256(path: Path) -> str:
@@ -57,6 +68,17 @@ def download_model(metadata: dict[str, str], destination: Path) -> str:
             temporary_path.unlink()
 
 
+def download_road_model(metadata: dict[str, str], cache_dir: Path) -> Path:
+    """Download one pinned Hugging Face model snapshot into the project cache."""
+    return Path(
+        snapshot_download(
+            repo_id=metadata["repository"],
+            revision=metadata["revision"],
+            cache_dir=cache_dir,
+        )
+    )
+
+
 def _validate_digest(metadata: dict[str, str], actual: str, path: Path) -> None:
     expected = metadata.get("sha256")
     if expected and actual.lower() != expected.lower():
@@ -68,18 +90,26 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--model", action="append", help="Registry key to download; repeat as needed."
     )
+    parser.add_argument(
+        "--road-model",
+        action="append",
+        help="Road-segmentation registry key to download; repeat as needed.",
+    )
     parser.add_argument("--all", action="store_true", help="Download every model in the registry.")
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
     parser.add_argument("--models-dir", type=Path, default=DEFAULT_MODELS_DIR)
+    parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     return parser.parse_args()
 
 
 def main() -> None:
     arguments = parse_arguments()
     registry = read_registry(arguments.registry)
+    road_registry = read_road_registry(arguments.registry)
     selected_names = list(registry) if arguments.all else arguments.model or []
-    if not selected_names:
-        raise SystemExit("Specify --model <registry-key> or --all.")
+    selected_road_names = list(road_registry) if arguments.all else arguments.road_model or []
+    if not selected_names and not selected_road_names:
+        raise SystemExit("Specify --model <registry-key>, --road-model <registry-key>, or --all.")
 
     for name in selected_names:
         if name not in registry:
@@ -88,6 +118,15 @@ def main() -> None:
         destination = arguments.models_dir / metadata["filename"]
         digest = download_model(metadata, destination)
         print(f"{name}: {destination} | sha256={digest} | release={metadata['release']}")
+
+    for name in selected_road_names:
+        if name not in road_registry:
+            raise SystemExit(
+                f"Unknown road model '{name}'. Available: {', '.join(road_registry) or 'none'}"
+            )
+        metadata = road_registry[name]
+        snapshot_path = download_road_model(metadata, arguments.cache_dir)
+        print(f"{name}: {snapshot_path} | revision={metadata['revision']}")
 
 
 if __name__ == "__main__":

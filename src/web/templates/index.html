@@ -29,7 +29,7 @@
       <section class="summary" aria-live="polite">
         <article><span>Veiculos identificados</span><strong id="vehicle-count">—</strong></article>
         <article><span>Modelo</span><strong id="model-name">—</strong></article>
-        <article><span>Inferencia</span><strong id="inference-time">—</strong></article>
+        <article><span>Analise total</span><strong id="inference-time">—</strong></article>
         <article><span>SAHI</span><strong id="sahi-status">—</strong></article>
       </section>
 
@@ -44,11 +44,15 @@
           <figcaption><span>02</span> Veiculos detectados</figcaption>
           <div class="image-stage"><img id="detections-image" alt="Veiculos detectados" /></div>
         </figure>
+        <figure class="image-card">
+          <figcaption><span>03</span> Veiculos e vias <small>Caixas ciano | vias laranja</small></figcaption>
+          <div class="image-stage"><img id="combined-image" alt="Veiculos e malha viaria combinados" /></div>
+        </figure>
       </section>
 
       <section class="road-panel">
-        <div><p class="eyebrow">Camada secundaria</p><h2>Regiao provavel de via</h2></div>
-        <button id="road-toggle" class="text-button" type="button" disabled>Mostrar malha viaria</button>
+        <div><p class="eyebrow">Camada secundaria</p><h2>Malha viaria | Mask2Former</h2></div>
+        <button id="road-toggle" class="text-button" type="button" disabled>Mostrar apenas as vias</button>
       </section>
       <figure class="road-image image-card is-hidden" id="road-card">
         <div class="image-stage"><img id="roads-image" alt="Regiao provavel de estrada" /></div>

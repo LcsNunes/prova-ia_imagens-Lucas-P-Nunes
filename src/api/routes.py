@@ -65,7 +65,11 @@ async def create_analysis(request: Request, image: ImageUpload) -> AnalysisRespo
         sahi_enabled=result.sahi_enabled,
         confidence=result.confidence,
         inference_ms=result.inference_ms,
+        vehicle_inference_ms=result.vehicle_inference_ms,
+        road_inference_ms=result.road_inference_ms,
+        road_method=result.road_method,
         detections_image=_to_jpeg_data_url(result.annotated_image),
+        combined_image=_to_jpeg_data_url(result.combined_image),
         roads_image=_to_jpeg_data_url(result.roads.overlay),
     )
 

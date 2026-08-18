@@ -7,6 +7,7 @@ const roadCard = document.querySelector("#road-card");
 
 const originalImage = document.querySelector("#original-image");
 const detectionsImage = document.querySelector("#detections-image");
+const combinedImage = document.querySelector("#combined-image");
 const roadsImage = document.querySelector("#roads-image");
 
 function updateMessage(text, isError = false) {
@@ -33,7 +34,7 @@ analyzeButton.addEventListener("click", async () => {
 
   analyzeButton.disabled = true;
   roadToggle.disabled = true;
-  updateMessage("Executando deteccao e destacando a regiao de via...");
+  updateMessage("Detectando veiculos e segmentando a malha viaria...");
   const formData = new FormData();
   formData.append("image", file);
 
@@ -48,9 +49,16 @@ analyzeButton.addEventListener("click", async () => {
     document.querySelector("#inference-time").textContent = `${payload.inference_ms.toFixed(0)} ms`;
     document.querySelector("#sahi-status").textContent = payload.sahi_enabled ? "Ligado" : "Desligado";
     detectionsImage.src = payload.detections_image;
+    combinedImage.src = payload.combined_image;
     roadsImage.src = payload.roads_image;
     roadToggle.disabled = false;
-    updateMessage("Analise concluida. Revise as duas camadas visuais abaixo.");
+    updateMessage(
+      "Analise concluida: veiculos " +
+        payload.vehicle_inference_ms.toFixed(0) +
+        " ms | vias " +
+        payload.road_inference_ms.toFixed(0) +
+        " ms. Caixas ciano, vias laranja.",
+    );
   } catch (error) {
     updateMessage(error.message, true);
   } finally {
@@ -60,7 +68,7 @@ analyzeButton.addEventListener("click", async () => {
 
 roadToggle.addEventListener("click", () => {
   const hidden = roadCard.classList.toggle("is-hidden");
-  roadToggle.textContent = hidden ? "Mostrar malha viaria" : "Ocultar malha viaria";
+  roadToggle.textContent = hidden ? "Mostrar apenas as vias" : "Ocultar camada de vias";
 });
 
 fetch("/api/health")

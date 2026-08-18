@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from time import perf_counter
@@ -15,6 +15,7 @@ import numpy as np
 from src.detection.base import Detection, Detector
 from src.detection.sahi_detector import SahiVehicleDetector
 from src.detection.yolo_detector import YoloVehicleDetector
+from src.roads.neural_road import Mask2FormerRoadHighlighter
 from src.roads.opencv_road import RoadHighlight, highlight_roads
 from src.visualization.draw import draw_detections
 
@@ -27,11 +28,15 @@ class AnalysisResult:
 
     detections: tuple[Detection, ...]
     annotated_image: np.ndarray
+    combined_image: np.ndarray
     roads: RoadHighlight
     inference_ms: float
+    vehicle_inference_ms: float
+    road_inference_ms: float
     model_name: str
     confidence: float
     sahi_enabled: bool
+    road_method: str
 
     @property
     def vehicle_count(self) -> int:
@@ -48,13 +53,15 @@ class VehicleAnalysisPipeline:
         model_name: str,
         confidence: float,
         sahi_enabled: bool,
-        road_config: Mapping[str, Any],
+        road_highlighter: Callable[[np.ndarray], RoadHighlight],
+        road_method: str,
     ) -> None:
         self.detector = detector
         self.model_name = model_name
         self.confidence = confidence
         self.sahi_enabled = sahi_enabled
-        self.road_config = road_config
+        self.road_highlighter = road_highlighter
+        self.road_method = road_method
 
     @classmethod
     def from_config(
@@ -93,41 +100,51 @@ class VehicleAnalysisPipeline:
                 **detector_options,
                 nms_iou=float(model.get("nms_iou", 0.7)),
             )
+        road_highlighter, road_method = _build_road_highlighter(
+            road_config,
+            project_root,
+            os.getenv("DEVICE", str(runtime.get("device", "auto"))),
+        )
         return cls(
             detector=detector,
             model_name=model_name,
             confidence=float(model["confidence"]),
             sahi_enabled=sahi_enabled,
-            road_config=road_config,
+            road_highlighter=road_highlighter,
+            road_method=road_method,
         )
 
     def analyze(self, image: np.ndarray) -> AnalysisResult:
-        """Detect vehicles, then create road and detection overlays for one RGB image."""
+        """Detect vehicles, segment roads, and compose their overlays for one RGB image."""
         LOGGER.info(
             "Starting inference with model=%s sahi_enabled=%s", self.model_name, self.sahi_enabled
         )
+        total_started_at = perf_counter()
         started_at = perf_counter()
         detections = self.detector.predict(image)
-        inference_ms = (perf_counter() - started_at) * 1_000
-        roads = highlight_roads(
-            image=image,
-            hsv_lower=self.road_config["hsv_lower"],
-            hsv_upper=self.road_config["hsv_upper"],
-            kernel_size=int(self.road_config["kernel_size"]),
-            min_area=int(self.road_config["min_area"]),
-        )
+        vehicle_inference_ms = (perf_counter() - started_at) * 1_000
+        started_at = perf_counter()
+        roads = self.road_highlighter(image)
+        road_inference_ms = (perf_counter() - started_at) * 1_000
+        inference_ms = (perf_counter() - total_started_at) * 1_000
         result = AnalysisResult(
             detections=tuple(detections),
             annotated_image=draw_detections(image, detections),
+            combined_image=draw_detections(roads.overlay, detections),
             roads=roads,
             inference_ms=inference_ms,
+            vehicle_inference_ms=vehicle_inference_ms,
+            road_inference_ms=road_inference_ms,
             model_name=self.model_name,
             confidence=self.confidence,
             sahi_enabled=self.sahi_enabled,
+            road_method=self.road_method,
         )
         LOGGER.info(
-            "Inference finished with vehicles=%s inference_ms=%.1f",
+            "Inference finished with vehicles=%s vehicle_ms=%.1f road_ms=%.1f total_ms=%.1f",
             result.vehicle_count,
+            result.vehicle_inference_ms,
+            result.road_inference_ms,
             inference_ms,
         )
         return result
@@ -145,3 +162,33 @@ def _required_string(configuration: Mapping[str, Any], key: str) -> str:
     if not isinstance(value, str) or not value:
         raise ValueError(f"Configuration key '{key}' must be a non-empty string.")
     return value
+
+
+def _build_road_highlighter(
+    road_config: Mapping[str, Any], project_root: Path, device: str
+) -> tuple[Callable[[np.ndarray], RoadHighlight], str]:
+    method = str(road_config.get("method", "hsv"))
+    if method == "mask2former":
+        cache_dir = project_root / _required_string(road_config, "cache_dir")
+        highlighter = Mask2FormerRoadHighlighter(
+            model_id=_required_string(road_config, "model_id"),
+            revision=_required_string(road_config, "revision"),
+            road_class_id=int(road_config["road_class_id"]),
+            cache_dir=cache_dir,
+            device=device,
+            overlay_color=tuple(int(value) for value in road_config["overlay_color"]),
+            opacity=float(road_config["opacity"]),
+        )
+        return highlighter.highlight, method
+    if method == "hsv":
+        return (
+            lambda image: highlight_roads(
+                image=image,
+                hsv_lower=road_config["hsv_lower"],
+                hsv_upper=road_config["hsv_upper"],
+                kernel_size=int(road_config["kernel_size"]),
+                min_area=int(road_config["min_area"]),
+            ),
+            method,
+        )
+    raise ValueError(f"Unsupported roads.method: {method}")

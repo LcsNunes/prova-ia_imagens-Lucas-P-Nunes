@@ -15,11 +15,15 @@ class FakePipeline:
         return AnalysisResult(
             detections=(Detection((1, 1, 5, 5), 0.9, "small vehicle"),),
             annotated_image=image,
+            combined_image=image,
             roads=RoadHighlight(mask=np.zeros(image.shape[:2], dtype=np.uint8), overlay=image),
             inference_ms=12.5,
+            vehicle_inference_ms=10.0,
+            road_inference_ms=2.0,
             model_name="fake-obb.pt",
             confidence=0.25,
             sahi_enabled=True,
+            road_method="mask2former",
         )
 
 
@@ -44,10 +48,13 @@ def test_api_analyzes_image_and_serializes_overlays() -> None:
 
     assert home.status_code == 200
     assert "Vista" in home.text
+    assert "combined-image" in home.text
+    assert "Mask2Former" in home.text
     assert health.json() == {"status": "ok", "model_loaded": True}
     assert response.status_code == 200
     assert response.json()["vehicle_count"] == 1
     assert response.json()["detections_image"].startswith("data:image/jpeg;base64,")
+    assert response.json()["combined_image"].startswith("data:image/jpeg;base64,")
     assert response.json()["roads_image"].startswith("data:image/jpeg;base64,")
 
 

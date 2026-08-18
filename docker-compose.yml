@@ -10,3 +10,4 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
       - ./models:/app/models
+      - ./cache:/app/cache

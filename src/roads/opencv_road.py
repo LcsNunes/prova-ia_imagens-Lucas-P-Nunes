@@ -70,7 +70,7 @@ def _keep_large_components(mask: np.ndarray, min_area: int) -> np.ndarray:
 
 def _build_overlay(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
     overlay = image.copy()
-    road_colour = np.array([30, 197, 226], dtype=np.uint8)
+    road_colour = np.array([242, 107, 56], dtype=np.uint8)
     selected = mask > 0
     overlay[selected] = (image[selected] * 0.70 + road_colour * 0.30).astype(np.uint8)
     return overlay

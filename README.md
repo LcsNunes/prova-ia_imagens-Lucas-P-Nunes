@@ -1,10 +1,10 @@
 # Drone vehicle inspection
 
-Prova pratica de visao computacional para detectar e contar veiculos em uma imagem aerea capturada por drone. A entrega prioriza a deteccao de veiculos; a malha viaria e um recurso visual secundario, implementado de forma simples com OpenCV.
+Prova pratica de visao computacional para detectar e contar veiculos em uma imagem aerea capturada por drone. A entrega prioriza a deteccao de veiculos; a malha viaria e um recurso visual secundario, apresentado por segmentacao semantica e avaliado de forma qualitativa.
 
 ## Visao geral
 
-A aplicacao recebe uma imagem, valida seu conteudo, executa deteccao sincrona, destaca a regiao provavel de via e devolve as duas visualizacoes. O detector final foi escolhido por experimentos controlados, nao por suposicao:
+A aplicacao recebe uma imagem, valida seu conteudo, executa deteccao sincrona, segmenta a camada de vias e devolve as visualizacoes de veiculos, vias e composicao. O detector final foi escolhido por experimentos controlados, nao por suposicao:
 
 | Configuracao final | Valor |
 | --- | --- |
@@ -32,7 +32,7 @@ As classes COCO `car`, `motorcycle`, `bus` e `truck`, e as classes aereas `small
 ```text
 browser -> FastAPI -> validacao de imagem -> pipeline sincrono
                                              |-> detector YOLO / SAHI
-                                             |-> destaque HSV + morfologia
+                                             |-> Mask2Former para vias
                                              `-> overlays JPEG + metadados
 ```
 
@@ -61,6 +61,7 @@ py -3.10 -m venv .venv
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python scripts/download_models.py --model aerial_yolo11n_obb
+python scripts/download_models.py --road-model mask2former_satellite
 python -m uvicorn src.api.app:app --reload
 ```
 
@@ -102,6 +103,8 @@ curl.exe -X POST http://127.0.0.1:8000/api/analyses -F "image=@data/raw/drone_sc
 ```
 
 Erros de upload retornam `422` com um codigo e mensagem segura; indisponibilidade do modelo retorna `503`. A inferencia e propositalmente sincrona, sem filas, Redis ou workers.
+
+Atualizacao da composicao visual: a resposta tambem inclui os tempos separados de veiculos e vias, alem da imagem combinada. A interface exibe caixas ciano para veiculos e camada laranja para vias; as caixas sao desenhadas por ultimo para continuarem legiveis.
 
 ## Ground truth e metricas
 
@@ -172,6 +175,12 @@ Nenhuma das duas hipoteses melhorou os veiculos ocluidos: ambas reduziram F1 e a
 
 ## Malha viaria
 
+### Integracao final
+
+A interface usa Mask2Former Satellite, obtido em uma revisao fixa e mantido no cache local do projeto. A classe de via foi auditada visualmente no notebook; como nao ha mascaras ground truth de estrada, este resultado e qualitativo e nao deve ser reportado como IoU, precision ou recall.
+
+YOLO com SAHI e Mask2Former executam sequencialmente na mesma requisicao. Eles nao compartilham pesos: o primeiro localiza veiculos e o segundo produz a mascara de vias. A composicao aplica primeiro a camada laranja de vias e desenha as caixas ciano por cima. O modo HSV abaixo permanece como baseline e fallback configuravel.
+
 [`src/roads/opencv_road.py`](src/roads/opencv_road.py) usa HSV, threshold, fechamento/abertura morfologica, filtros por componentes conectados e overlay semitransparente. Ela indica uma **regiao provavel de pavimento/via**, nao uma segmentacao semantica de estrada.
 
 A limitacao e intencional: tempo e profundidade tecnica foram concentrados na deteccao de veiculos. Iluminacao, sombras, material da pista, telhados com cor semelhante, clima e cameras diferentes podem degradar o resultado. Uma proxima versao usaria segmentacao treinada e imagens variadas para avaliar IoU de via.
@@ -193,6 +202,7 @@ O projeto usa um unico container FastAPI. Primeiro baixe o peso final para o vol
 ```powershell
 docker compose build
 docker compose run --rm app python scripts/download_models.py --model aerial_yolo11n_obb
+docker compose run --rm app python scripts/download_models.py --road-model mask2former_satellite
 docker compose up
 ```
 
@@ -214,7 +224,7 @@ O workflow [`ci.yml`](.github/workflows/ci.yml) e executado em push para `develo
 - O ground truth atual teve pre-anotacao do modelo aereo e expansao manual apos auditoria visual; ele e uma referencia de estudo de caso, nao um teste independente.
 - OBB e comparado como bounding box alinhada aos eixos para manter uma unica metrica de matching; uma evolucao pode avaliar IoU orientado.
 - A inferencia SAHI melhora recall, mas aumenta a latencia por imagem.
-- A camada de vias e baseada em cor, nao em segmentacao semantica.
+- A camada de vias usa um modelo pre-treinado, mas ainda nao possui ground truth independente; portanto, sua avaliacao e visual.
 - Proximas evolucoes: ground truth independente para novas imagens, conjunto separado de validacao/teste, VisDrone ou fine-tuning leve se houver dados, avaliacao de OBB, e somente depois arquitetura AWS, filas e monitoramento.
 
 ## Uso de IA
