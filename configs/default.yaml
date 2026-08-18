@@ -3,7 +3,7 @@ model:
   registry_key: aerial_yolo11n_obb
   source: ultralytics-dotav1
   domain: aerial
-  confidence: 0.25
+  confidence: 0.15
   imgsz: 1024
   nms_iou: 0.70
 

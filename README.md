@@ -10,10 +10,10 @@ A aplicacao recebe uma imagem, valida seu conteudo, executa deteccao sincrona, d
 | --- | --- |
 | Modelo | `yolo11n-obb.pt` treinado em DOTA v1 |
 | Ontologia da aplicacao | `vehicle` |
-| Confidence | `0.25` |
+| Confidence | `0.15` |
 | Inferencia | SAHI, fatias de 512 px e overlap de 20% |
 | Dispositivo observado | NVIDIA GeForce RTX 5060 8 GB, CUDA 12.8 |
-| Resultado controlado | F1 `0.989`, recall `1.000`, erro absoluto de contagem `1` |
+| Resultado da configuracao final | F1 `0.895`, recall `0.855`, erro absoluto de contagem `5` |
 
 O resultado acima e valido para a imagem da prova e para o ground truth revisado deste repositorio. Ele nao deve ser interpretado como medida de generalizacao para novas cidades, cameras ou altitudes.
 
@@ -105,11 +105,11 @@ Erros de upload retornam `422` com um codigo e mensagem segura; indisponibilidad
 
 ## Ground truth e metricas
 
-[`data/annotations/ground_truth.json`](data/annotations/ground_truth.json) contem 46 caixas, somente com a categoria `vehicle`, alem de dimensoes e SHA-256 da imagem. O fluxo no notebook permite criar ou revisar caixas manualmente com `RectangleSelector`.
+[`data/annotations/ground_truth.json`](data/annotations/ground_truth.json) contem 55 caixas, somente com a categoria `vehicle`, alem de dimensoes e SHA-256 da imagem. O fluxo no notebook permite criar ou revisar caixas manualmente com `RectangleSelector`.
 
 As visualizacoes de benchmark usam renderizacao estatica por padrao, evitando dependencia do widget JavaScript do VS Code. A celula de anotacao manual permanece interativa e so deve ser executada quando for necessario editar o ground truth.
 
-O arquivo atual foi iniciado por pre-anotacoes do modelo aereo e revisado manualmente. Essa escolha acelera a prova, mas e uma fonte potencial de viés; por transparencia, ela consta no proprio JSON e deve ser substituida por anotacao independente em uma avaliacao de produto.
+O arquivo atual foi iniciado por pre-anotacoes do modelo aereo e revisado manualmente, incluindo uma expansao para veiculos parcialmente ocluidos. Essa escolha acelera a prova, mas e uma fonte potencial de vies de selecao; por transparencia, ela consta no proprio JSON e deve ser substituida por anotacao independente em uma avaliacao de produto.
 
 Predicoes e ground truth sao pareados de forma gulosa por score quando `IoU >= 0.50`. Alem de `Absolute Count Error`, o projeto calcula TP, FP, FN, precision, recall e F1, impedindo que falsos positivos e falsos negativos se cancelem apenas na contagem.
 
@@ -123,22 +123,22 @@ Nesta etapa as demais variaveis foram mantidas fixas e SAHI ficou desligado.
 
 | Modelo aereo | TP | FP | FN | Precision | Recall | F1 | Count error | Mediana | Pico GPU |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| YOLO11n-OBB | 44 | 3 | 2 | 0.936 | 0.957 | **0.946** | **1** | **45.3 ms** | **88.3 MB** |
-| YOLO11s-OBB | 43 | 5 | 3 | 0.896 | 0.935 | 0.915 | 2 | 49.1 ms | 161.5 MB |
-| YOLO11m-OBB | 42 | 6 | 4 | 0.875 | 0.913 | 0.894 | 2 | 49.9 ms | 312.0 MB |
+| YOLO11n-OBB | 44 | 3 | 11 | **0.936** | 0.800 | **0.863** | 8 | **50.3 ms** | **88.3 MB** |
+| YOLO11s-OBB | 44 | 4 | 11 | 0.917 | 0.800 | 0.854 | **7** | 52.3 ms | 161.5 MB |
+| YOLO11m-OBB | 44 | 4 | 11 | 0.917 | 0.800 | 0.854 | **7** | 55.5 ms | 266.6 MB |
 
-O Nano venceu os tres criterios observados nesta cena: F1, erro de contagem e custo. Small nao foi escolhido por padrao; seus dados ficaram piores aqui.
+O Nano obteve o maior F1 e a menor latencia/memoria. Small e Medium tiveram erro de contagem uma unidade menor, mas F1 inferior e custo maior; por isso nao foram escolhidos sem evidencias em imagens independentes.
 
 ### Benchmark principal 2 x 2
 
 | Dominio / inferencia | TP | FP | FN | Precision | Recall | F1 | Count error | Mediana |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| COCO normal | 0 | 1 | 46 | 0.000 | 0.000 | 0.000 | 45 | **39.6 ms** |
-| COCO + SAHI 512 | 0 | 4 | 46 | 0.000 | 0.000 | 0.000 | 42 | 663.4 ms |
-| Aerial/DOTA normal | 44 | 3 | 2 | 0.936 | 0.957 | 0.946 | **1** | 47.1 ms |
-| Aerial/DOTA + SAHI 512 | **46** | **1** | **0** | **0.979** | **1.000** | **0.989** | **1** | 753.6 ms |
+| COCO normal | 0 | 1 | 55 | 0.000 | 0.000 | 0.000 | 54 | **41.2 ms** |
+| COCO + SAHI 512 | 0 | 4 | 55 | 0.000 | 0.000 | 0.000 | 51 | 796.8 ms |
+| Aerial/DOTA normal | 44 | 3 | 11 | 0.936 | 0.800 | 0.863 | 8 | 52.8 ms |
+| Aerial/DOTA + SAHI 512 | **46** | **1** | **9** | **0.979** | **0.836** | **0.902** | 8 | 888.1 ms |
 
-A especializacao aerea foi decisiva nesta imagem. SAHI aumentou F1 de 0.946 para 0.989 e eliminou os FNs, com custo material de latencia. A configuracao final favorece qualidade de deteccao, conforme a prioridade do desafio.
+A especializacao aerea foi decisiva nesta imagem. SAHI aumentou F1 de 0.863 para 0.902 e reduziu FNs de 11 para 9, com custo material de latencia. Os nove FNs restantes correspondem aos veiculos parcialmente ocluidos ou cortados que passaram a fazer parte do ground truth revisado.
 
 ### Confidence e tamanho da fatia
 
@@ -146,17 +146,29 @@ Para o Nano aereo com SAHI:
 
 | Confidence | TP | FP | FN | F1 | Count error |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| 0.15 | 46 | 4 | 0 | 0.958 | 4 |
-| **0.25** | **46** | **1** | **0** | **0.989** | **1** |
-| 0.35 | 42 | 1 | 4 | 0.944 | 3 |
-| 0.50 | 39 | 0 | 7 | 0.918 | 7 |
+| **0.15** | **47** | 3 | **8** | 0.895 | **5** |
+| 0.25 | 46 | **1** | 9 | **0.902** | 8 |
+| 0.35 | 42 | **1** | 13 | 0.857 | 12 |
+| 0.50 | 39 | 0 | 16 | 0.830 | 16 |
 
 | Fatias | TP | FP | FN | F1 | Count error | Mediana |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| **512** | **46** | **1** | **0** | **0.989** | **1** | 792.8 ms |
-| 640 | 43 | 4 | 3 | 0.925 | 1 | **603.1 ms** |
+| **512** | **46** | **1** | **9** | **0.902** | 8 | 884.2 ms |
+| 640 | 44 | 3 | 11 | 0.863 | 8 | **652.5 ms** |
 
-Escolhi `confidence=0.25` e fatia 512. Isso nao e um grid search nem uma regra universal: foi uma verificacao pequena para entender o comportamento da cena, e devera ser revalidado em imagens independentes.
+Escolhi `confidence=0.15` e fatia 512 para a configuracao final porque recupera um TP e reduz o erro de contagem de 8 para 5, a metrica mais proxima do objetivo de estimar o total de veiculos. O custo e dois FPs adicionais e queda pequena de F1 (0.902 para 0.895) frente a `0.25`; essa troca fica registrada explicitamente. Isso nao e um grid search nem uma regra universal: foi uma verificacao pequena para entender o comportamento da cena e devera ser revalidada em imagens independentes.
+
+### Testes direcionados para oclusao
+
+Mantendo modelo, confidence `0.25`, fatia, imagem e ground truth, dois testes alteraram apenas uma variavel por vez em relacao ao controle de `imgsz=1024` e overlap de 20%.
+
+| Configuracao | TP | FP | FN | F1 | Count error | Mediana |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Controle (1024, 20%) | **46** | **1** | **9** | **0.902** | **8** | **839.1 ms** |
+| `imgsz=1280`, 20% | 37 | 2 | 18 | 0.787 | 16 | 940.5 ms |
+| 1024, overlap 30% | 44 | 3 | 11 | 0.863 | 8 | 1004.3 ms |
+
+Nenhuma das duas hipoteses melhorou os veiculos ocluidos: ambas reduziram F1 e aumentaram a latencia. Portanto, `imgsz=1024` e overlap de 20% foram mantidos.
 
 ## Malha viaria
 
@@ -199,7 +211,7 @@ O workflow [`ci.yml`](.github/workflows/ci.yml) e executado em push para `develo
 ## Limitacoes e proximos passos
 
 - Ha apenas uma imagem de avaliacao; resultados nao representam uma distribuicao completa.
-- O ground truth atual teve pre-anotacao do modelo aereo, apesar da revisao manual.
+- O ground truth atual teve pre-anotacao do modelo aereo e expansao manual apos auditoria visual; ele e uma referencia de estudo de caso, nao um teste independente.
 - OBB e comparado como bounding box alinhada aos eixos para manter uma unica metrica de matching; uma evolucao pode avaliar IoU orientado.
 - A inferencia SAHI melhora recall, mas aumenta a latencia por imagem.
 - A camada de vias e baseada em cor, nao em segmentacao semantica.
