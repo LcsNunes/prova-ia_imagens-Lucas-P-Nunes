@@ -28,6 +28,9 @@ outputs/metrics/*
 !outputs/**/.gitkeep
 !outputs/metrics/benchmark_results.json
 
+# Local external evaluation samples (including licensed or third-party images)
+data/external/
+
 # OS and editor files
 .DS_Store
 Thumbs.db
