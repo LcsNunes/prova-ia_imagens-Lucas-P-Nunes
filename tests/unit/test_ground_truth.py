@@ -25,6 +25,25 @@ def test_save_and_load_ground_truth(tmp_path: Path) -> None:
     assert load_ground_truth(ground_truth_path)[0].annotation_id == "vehicle-001"
 
 
+def test_save_ground_truth_can_store_a_project_relative_image_path(tmp_path: Path) -> None:
+    project_root = tmp_path / "project"
+    image_path = project_root / "data" / "raw" / "image.jpg"
+    image_path.parent.mkdir(parents=True)
+    Image.new("RGB", (20, 10)).save(image_path)
+    ground_truth_path = project_root / "data" / "annotations" / "ground_truth.json"
+
+    save_ground_truth(
+        ground_truth_path,
+        image_path,
+        [(1, 2, 10, 8)],
+        "manual_review",
+        relative_to=project_root,
+    )
+
+    saved = json.loads(ground_truth_path.read_text(encoding="utf-8"))
+    assert saved["image"]["path"] == "data/raw/image.jpg"
+
+
 @pytest.mark.parametrize(
     "payload",
     [

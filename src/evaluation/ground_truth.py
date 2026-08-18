@@ -36,16 +36,26 @@ def load_ground_truth(path: Path) -> list[GroundTruthBox]:
 
 
 def save_ground_truth(
-    path: Path, image_path: Path, boxes: list[BoundingBox], annotation_method: str
+    path: Path,
+    image_path: Path,
+    boxes: list[BoundingBox],
+    annotation_method: str,
+    *,
+    relative_to: Path | None = None,
 ) -> None:
     """Persist reviewed boxes with image dimensions and a content hash for reproducibility."""
+    image_path = image_path.resolve()
+    serialized_image_path = image_path
+    if relative_to is not None:
+        serialized_image_path = image_path.relative_to(relative_to.resolve())
+
     with Image.open(image_path) as image:
         width, height = image.size
     payload = {
         "schema_version": 1,
         "annotation_method": annotation_method,
         "image": {
-            "path": str(image_path.as_posix()),
+            "path": str(serialized_image_path.as_posix()),
             "width": width,
             "height": height,
             "sha256": _sha256(image_path),
