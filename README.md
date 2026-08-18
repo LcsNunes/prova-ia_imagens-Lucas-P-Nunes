@@ -107,6 +107,8 @@ Erros de upload retornam `422` com um codigo e mensagem segura; indisponibilidad
 
 [`data/annotations/ground_truth.json`](data/annotations/ground_truth.json) contem 46 caixas, somente com a categoria `vehicle`, alem de dimensoes e SHA-256 da imagem. O fluxo no notebook permite criar ou revisar caixas manualmente com `RectangleSelector`.
 
+As visualizacoes de benchmark usam renderizacao estatica por padrao, evitando dependencia do widget JavaScript do VS Code. A celula de anotacao manual permanece interativa e so deve ser executada quando for necessario editar o ground truth.
+
 O arquivo atual foi iniciado por pre-anotacoes do modelo aereo e revisado manualmente. Essa escolha acelera a prova, mas e uma fonte potencial de viés; por transparencia, ela consta no proprio JSON e deve ser substituida por anotacao independente em uma avaliacao de produto.
 
 Predicoes e ground truth sao pareados de forma gulosa por score quando `IoU >= 0.50`. Alem de `Absolute Count Error`, o projeto calcula TP, FP, FN, precision, recall e F1, impedindo que falsos positivos e falsos negativos se cancelem apenas na contagem.
