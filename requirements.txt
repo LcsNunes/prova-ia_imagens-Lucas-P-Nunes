@@ -20,6 +20,8 @@ matplotlib>=3.8,<4.0
 ipympl>=0.9,<1.0
 PyMuPDF>=1.24,<2.0
 pandas>=2.2,<3.0
+transformers>=4.46,<5.0
+scipy>=1.14,<2.0
 
 # Quality
 pytest==8.4.2
