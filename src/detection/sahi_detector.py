@@ -1,4 +1,4 @@
-"""SAHI adapter for tiled vehicle inference with Ultralytics models."""
+"""Adaptador SAHI para inferencia de veiculos em fatias com modelos Ultralytics."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from src.detection.yolo_detector import resolve_device
 
 
 class SahiVehicleDetector:
-    """Run sliced inference and return only project-normalized vehicle detections."""
+    """Executa inferencia em fatias e retorna somente deteccoes normalizadas do projeto."""
 
     def __init__(
         self,
@@ -48,7 +48,7 @@ class SahiVehicleDetector:
         )
 
     def predict(self, image: np.ndarray) -> list[Detection]:
-        """Slice one RGB image, merge duplicates, and normalize vehicle classes."""
+        """Divide uma imagem RGB, une duplicatas e normaliza as classes de veiculos."""
         if image.ndim != 3 or image.shape[2] != 3:
             raise ValueError("Expected an RGB image with shape (height, width, 3).")
 

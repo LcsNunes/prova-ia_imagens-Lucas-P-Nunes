@@ -1,4 +1,4 @@
-"""Safe decoding and validation for image uploads."""
+"""Decodificacao e validacao segura de imagens enviadas."""
 
 from __future__ import annotations
 
@@ -9,13 +9,13 @@ ALLOWED_IMAGE_FORMATS = {"JPEG", "PNG", "WEBP"}
 
 
 class ImageValidationError(ValueError):
-    """Raised when uploaded bytes cannot be accepted as an analysis image."""
+    """Lancada quando os bytes enviados nao podem ser aceitos como imagem de analise."""
 
 
 def decode_rgb_image(content: bytes, max_upload_bytes: int, max_pixels: int) -> np.ndarray:
-    """Validate uploaded bytes and return an isolated RGB pixel array.
+    """Valida os bytes enviados e retorna uma matriz RGB independente.
 
-    Image format is inspected from its content rather than trusting the HTTP content type.
+    O formato e verificado pelo conteudo, em vez de confiar no tipo HTTP informado.
     """
     if not content:
         raise ImageValidationError("Envie uma imagem nao vazia.")
@@ -34,7 +34,7 @@ def decode_rgb_image(content: bytes, max_upload_bytes: int, max_pixels: int) -> 
 
 
 def _image_format(content: bytes) -> str | None:
-    """Identify the allowed formats by their signatures before decoding the bytes."""
+    """Identifica formatos permitidos por suas assinaturas antes de decodificar os bytes."""
     if content.startswith(b"\xff\xd8\xff"):
         return "JPEG"
     if content.startswith(b"\x89PNG\r\n\x1a\n"):

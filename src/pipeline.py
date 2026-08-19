@@ -1,4 +1,4 @@
-"""Final synchronous image-analysis pipeline selected from the experiments."""
+"""Pipeline final de analise sincrona de imagens escolhido nos experimentos."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class AnalysisResult:
-    """Vehicle and road outputs returned after one synchronous image analysis."""
+    """Saidas de veiculos e vias retornadas apos uma analise sincrona de imagem."""
 
     detections: tuple[Detection, ...]
     annotated_image: np.ndarray
@@ -40,12 +40,12 @@ class AnalysisResult:
 
     @property
     def vehicle_count(self) -> int:
-        """Return the normalized number of vehicle detections."""
+        """Retorna a quantidade normalizada de deteccoes de veiculos."""
         return len(self.detections)
 
 
 class VehicleAnalysisPipeline:
-    """Coordinate the chosen detector, road visualizer, and presentation overlays."""
+    """Coordena o detector escolhido, o visualizador de vias e os overlays de apresentacao."""
 
     def __init__(
         self,
@@ -67,7 +67,7 @@ class VehicleAnalysisPipeline:
     def from_config(
         cls, configuration: Mapping[str, Any], project_root: Path
     ) -> VehicleAnalysisPipeline:
-        """Create the configured final detector without downloading model weights implicitly."""
+        """Cria o detector final configurado sem baixar pesos de forma implicita."""
         model = _mapping(configuration, "model")
         runtime = _mapping(configuration, "runtime")
         sahi = _mapping(configuration, "sahi")
@@ -115,7 +115,7 @@ class VehicleAnalysisPipeline:
         )
 
     def analyze(self, image: np.ndarray) -> AnalysisResult:
-        """Detect vehicles, segment roads, and compose their overlays for one RGB image."""
+        """Detecta veiculos, segmenta vias e compoe os overlays de uma imagem RGB."""
         LOGGER.info(
             "Starting inference with model=%s sahi_enabled=%s", self.model_name, self.sahi_enabled
         )

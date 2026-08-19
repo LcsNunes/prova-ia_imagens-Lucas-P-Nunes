@@ -1,4 +1,4 @@
-"""Consistent RGB visualizations used by experiments and the web application."""
+"""Visualizacoes RGB consistentes usadas pelos experimentos e pela aplicacao web."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ FALSE_NEGATIVE_COLOR = (244, 67, 54)
 
 
 def draw_detections(image: np.ndarray, detections: list[Detection]) -> np.ndarray:
-    """Return an RGB image with vehicle boxes, scores, and OBB polygons when available."""
+    """Retorna imagem RGB com caixas, scores e poligonos OBB quando disponiveis."""
     canvas = image.copy()
     for detection in detections:
         _draw_box(canvas, detection.bbox_xyxy, DETECTION_COLOR)
@@ -40,7 +40,7 @@ def draw_detections(image: np.ndarray, detections: list[Detection]) -> np.ndarra
 
 
 def draw_ground_truth(image: np.ndarray, ground_truth: list[GroundTruthBox]) -> np.ndarray:
-    """Return an RGB image with manually reviewed vehicle boxes."""
+    """Retorna imagem RGB com caixas de veiculos revisadas manualmente."""
     canvas = image.copy()
     for ground_truth_box in ground_truth:
         _draw_box(canvas, ground_truth_box.bbox_xyxy, GROUND_TRUTH_COLOR)
@@ -54,10 +54,10 @@ def draw_detection_diagnostics(
     *,
     iou_threshold: float,
 ) -> np.ndarray:
-    """Return an error-analysis overlay using green TP, amber FP, and red FN boxes.
+    """Retorna overlay de erros com caixas TP verdes, FP amarelas e FN vermelhas.
 
-    The same one-to-one IoU matching used by the metrics is applied, so the visual
-    audit and the reported TP/FP/FN counts describe the exact same detections.
+    Aplica o mesmo pareamento IoU um-para-um usado nas metricas; assim, a auditoria visual
+    e as contagens TP/FP/FN reportadas descrevem exatamente as mesmas deteccoes.
     """
     canvas = image.copy()
     matches = greedy_match(detections, ground_truth, iou_threshold)
@@ -88,7 +88,7 @@ def draw_detection_diagnostics(
 
 
 def save_rgb_image(path: Path, image: np.ndarray) -> None:
-    """Persist an RGB visualization, creating its destination directory when needed."""
+    """Salva uma visualizacao RGB e cria o diretorio de destino quando necessario."""
     path.parent.mkdir(parents=True, exist_ok=True)
     if not cv2.imwrite(str(path), cv2.cvtColor(image, cv2.COLOR_RGB2BGR)):
         raise OSError(f"Could not write image to {path}")

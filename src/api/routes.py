@@ -1,4 +1,4 @@
-"""Synchronous image-analysis endpoints."""
+"""Endpoints de analise sincrona de imagens."""
 
 from __future__ import annotations
 
@@ -22,13 +22,13 @@ ImageUpload = Annotated[UploadFile, File(...)]
 
 @router.get("/api/health", response_model=HealthResponse)
 def read_health(request: Request) -> HealthResponse:
-    """Report whether the configured pipeline has completed its local startup."""
+    """Informa se o pipeline configurado concluiu sua inicializacao local."""
     return HealthResponse(model_loaded=request.app.state.pipeline is not None)
 
 
 @router.post("/api/analyses", response_model=AnalysisResponse, status_code=status.HTTP_200_OK)
 async def create_analysis(request: Request, image: ImageUpload) -> AnalysisResponse:
-    """Validate one upload and return vehicle and road visualisations synchronously."""
+    """Valida um upload e retorna visualizacoes sincronas de veiculos e vias."""
     content = await image.read(request.app.state.max_upload_bytes + 1)
     try:
         rgb_image = decode_rgb_image(

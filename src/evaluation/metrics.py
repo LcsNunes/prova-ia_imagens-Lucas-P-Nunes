@@ -1,4 +1,4 @@
-"""Business-oriented evaluation metrics for vehicle existence detection."""
+"""Metricas de avaliacao voltadas ao negocio para existencia de veiculos."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from src.evaluation.matching import GroundTruthBox, Match, greedy_match
 
 @dataclass(frozen=True)
 class DetectionMetrics:
-    """Metrics derived from one-to-one IoU matching at a fixed threshold."""
+    """Metricas derivadas do pareamento um-para-um por IoU em limiar fixo."""
 
     true_positives: int
     false_positives: int
@@ -25,7 +25,7 @@ class DetectionMetrics:
 def calculate_detection_metrics(
     predictions: list[Detection], ground_truth: list[GroundTruthBox], iou_threshold: float = 0.5
 ) -> DetectionMetrics:
-    """Calculate detection quality without treating vehicle subclasses as separate labels."""
+    """Calcula a qualidade sem tratar subclasses de veiculos como rotulos distintos."""
     matches = greedy_match(predictions, ground_truth, iou_threshold)
     true_positives = len(matches)
     false_positives = len(predictions) - true_positives

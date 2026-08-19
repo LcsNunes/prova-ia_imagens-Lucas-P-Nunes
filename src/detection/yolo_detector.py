@@ -1,4 +1,4 @@
-"""Ultralytics YOLO adapter for COCO and oriented aerial vehicle models."""
+"""Adaptador Ultralytics YOLO para COCO e modelos aereos orientados de veiculos."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-# Keep Ultralytics settings local to this reproducible project instead of a user profile.
+# Mantem as configuracoes do Ultralytics no projeto reproduzivel, e nao no perfil do usuario.
 os.environ.setdefault("YOLO_CONFIG_DIR", str(Path(__file__).resolve().parents[2]))
 
 from src.detection.base import Detection, OrientedBox
@@ -20,7 +20,7 @@ YOLO = import_module("ultralytics").YOLO
 
 
 def resolve_device(requested_device: str) -> str:
-    """Resolve the requested runtime device and reject unavailable explicit CUDA requests."""
+    """Resolve o dispositivo solicitado e rejeita pedidos explicitos de CUDA indisponivel."""
     if requested_device == "auto":
         return "cuda:0" if torch.cuda.is_available() else "cpu"
     if requested_device.startswith("cuda") and not torch.cuda.is_available():
@@ -31,7 +31,7 @@ def resolve_device(requested_device: str) -> str:
 
 
 class YoloVehicleDetector:
-    """Run one Ultralytics model and expose only normalized vehicle detections."""
+    """Executa um modelo Ultralytics e expoe somente deteccoes normalizadas de veiculos."""
 
     def __init__(
         self,
@@ -50,7 +50,7 @@ class YoloVehicleDetector:
         self.model = YOLO(str(model_path))
 
     def predict(self, image: np.ndarray) -> list[Detection]:
-        """Run inference on an RGB image and return its vehicle predictions."""
+        """Executa inferencia em uma imagem RGB e retorna suas predicoes de veiculos."""
         if image.ndim != 3 or image.shape[2] != 3:
             raise ValueError("Expected an RGB image with shape (height, width, 3).")
 

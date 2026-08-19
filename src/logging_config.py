@@ -1,4 +1,4 @@
-"""Application logging with one compact, useful console format."""
+"""Logging da aplicacao com formato de console compacto e util."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import os
 
 
 def configure_logging(log_level: str | None = None) -> None:
-    """Configure process logging, honouring LOG_LEVEL when it is supplied."""
+    """Configura o logging do processo respeitando LOG_LEVEL quando informado."""
     level_name = (log_level or os.getenv("LOG_LEVEL", "INFO")).upper()
     logging.basicConfig(
         level=level_name,

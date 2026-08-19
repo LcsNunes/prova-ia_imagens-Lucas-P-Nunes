@@ -1,4 +1,4 @@
-"""Controlled runtime and quality measurements for detector comparisons."""
+"""Medicoes controladas de tempo e qualidade para comparar detectores."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from src.evaluation.metrics import DetectionMetrics, calculate_detection_metrics
 
 @dataclass(frozen=True)
 class BenchmarkResult:
-    """Quality and runtime observed for one fixed detector configuration."""
+    """Qualidade e tempo observados para uma configuracao fixa de detector."""
 
     name: str
     predicted_count: int
@@ -26,7 +26,7 @@ class BenchmarkResult:
     detections: tuple[Detection, ...]
 
     def as_dict(self) -> dict[str, float | int | str | None]:
-        """Flatten the result into a row ready for a DataFrame or JSON report."""
+        """Transforma o resultado em uma linha para DataFrame ou relatorio JSON."""
         return {
             "name": self.name,
             "predicted_count": self.predicted_count,
@@ -50,7 +50,7 @@ def benchmark_detector(
     repetitions: int = 3,
     iou_threshold: float = 0.5,
 ) -> BenchmarkResult:
-    """Warm a detector once, then measure repeated inference under fixed conditions."""
+    """Aquece um detector uma vez e mede inferencias repetidas em condicoes fixas."""
     if repetitions < 1:
         raise ValueError("repetitions must be at least one.")
 

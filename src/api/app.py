@@ -1,4 +1,4 @@
-"""FastAPI application factory and local executable entry point."""
+"""Fabrica da aplicacao FastAPI e ponto de entrada executavel local."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ def create_app(
     pipeline: VehicleAnalysisPipeline | None = None,
     configuration: dict[str, Any] | None = None,
 ) -> FastAPI:
-    """Create the local web application without starting external services."""
+    """Cria a aplicacao web local sem iniciar servicos externos."""
     config = configuration or load_yaml(PROJECT_ROOT / "configs" / "default.yaml")
     api_config = config.get("api", {})
 
@@ -64,7 +64,7 @@ app = create_app()
 
 
 def main() -> None:
-    """Run the application with the optional APP_PORT environment override."""
+    """Executa a aplicacao com a opcao de sobrescrever APP_PORT por ambiente."""
     uvicorn.run("src.api.app:app", host="0.0.0.0", port=int(os.getenv("APP_PORT", "8000")))
 
 

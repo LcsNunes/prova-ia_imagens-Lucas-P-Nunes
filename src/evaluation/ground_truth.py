@@ -1,4 +1,4 @@
-"""Structured ground-truth persistence for the vehicle-only evaluation task."""
+"""Persistencia estruturada de ground truth para a avaliacao somente de veiculos."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from src.evaluation.matching import GroundTruthBox
 
 
 def load_ground_truth(path: Path) -> list[GroundTruthBox]:
-    """Load vehicle-only annotations from the project's JSON ground-truth format."""
+    """Carrega anotacoes de veiculos no formato JSON de ground truth do projeto."""
     payload = json.loads(path.read_text(encoding="utf-8"))
     annotations = payload.get("annotations") if isinstance(payload, dict) else None
     if not isinstance(annotations, list):
@@ -43,7 +43,7 @@ def save_ground_truth(
     *,
     relative_to: Path | None = None,
 ) -> None:
-    """Persist reviewed boxes with image dimensions and a content hash for reproducibility."""
+    """Salva caixas revisadas, dimensoes e hash da imagem para reprodutibilidade."""
     image_path = image_path.resolve()
     serialized_image_path = image_path
     if relative_to is not None:

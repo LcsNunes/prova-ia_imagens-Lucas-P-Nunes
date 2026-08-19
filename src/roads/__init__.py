@@ -1,1 +1,1 @@
-"""Simple, deliberately non-neural road highlighting."""
+"""Componentes de destaque de vias neural e por processamento classico."""

@@ -1,1 +1,1 @@
-"""Reusable implementation for the drone vehicle-inspection solution."""
+"""Implementacao reutilizavel da solucao de inspecao de veiculos por drone."""

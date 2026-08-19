@@ -1,4 +1,4 @@
-"""Normalization of dataset-specific vehicle classes to the common ontology."""
+"""Normalizacao das classes de veiculo de cada dataset para a ontologia comum."""
 
 from __future__ import annotations
 
@@ -17,13 +17,13 @@ AERIAL_VEHICLE_CLASSES = {
 
 
 def normalize_vehicle_class(model_domain: str, source_class: str) -> str | None:
-    """Return ``vehicle`` when a source class belongs to the project vehicle ontology."""
+    """Retorna ``vehicle`` quando uma classe de origem pertence a ontologia do projeto."""
     classes = _classes_for_domain(model_domain)
     return "vehicle" if source_class in classes else None
 
 
 def vehicle_size_group(model_domain: str, source_class: str) -> str | None:
-    """Return the optional coarse vehicle-size group used only for diagnostics."""
+    """Retorna o grupo opcional de tamanho usado apenas para diagnostico."""
     return _classes_for_domain(model_domain).get(source_class)
 
 

@@ -1,4 +1,4 @@
-"""HSV and morphology based road highlighting for the presentation image."""
+"""Destaque de vias por HSV e morfologia para a imagem de apresentacao."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ import numpy as np
 
 @dataclass(frozen=True)
 class RoadHighlight:
-    """Probable-road mask and its semitransparent RGB overlay."""
+    """Mascara de via provavel e seu overlay RGB semitransparente."""
 
     mask: np.ndarray
     overlay: np.ndarray
@@ -24,11 +24,11 @@ def highlight_roads(
     kernel_size: int,
     min_area: int,
 ) -> RoadHighlight:
-    """Highlight low-saturation regions that plausibly correspond to roads.
+    """Destaca regioes de baixa saturacao que possivelmente correspondem a vias.
 
-    This intentionally simple visual aid is not a semantic segmentation model. The
-    threshold is configurable because lighting, pavement material, shadows, and cameras
-    alter the apparent road colour.
+    Este recurso visual propositalmente simples nao e um modelo de segmentacao semantica.
+    O limiar e configuravel porque iluminacao, pavimento, sombras e cameras alteram a cor
+    aparente da via.
     """
     _validate_inputs(image, hsv_lower, hsv_upper, kernel_size, min_area)
     hsv_image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)

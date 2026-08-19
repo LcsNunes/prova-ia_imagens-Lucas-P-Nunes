@@ -1,1 +1,1 @@
-"""Vehicle-detector interfaces and implementations."""
+"""Interfaces e implementacoes de detectores de veiculos."""

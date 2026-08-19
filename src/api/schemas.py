@@ -1,4 +1,4 @@
-"""Stable response contracts exposed by the FastAPI application."""
+"""Contratos estaveis de resposta expostos pela aplicacao FastAPI."""
 
 from __future__ import annotations
 
@@ -6,14 +6,14 @@ from pydantic import BaseModel, Field
 
 
 class HealthResponse(BaseModel):
-    """Minimal operational status for local use and Docker health checks."""
+    """Status operacional minimo para uso local e health checks do Docker."""
 
     status: str = "ok"
     model_loaded: bool
 
 
 class AnalysisResponse(BaseModel):
-    """Analysis metadata and display-ready JPEG overlays."""
+    """Metadados da analise e overlays JPEG prontos para exibicao."""
 
     vehicle_count: int = Field(ge=0)
     model_name: str

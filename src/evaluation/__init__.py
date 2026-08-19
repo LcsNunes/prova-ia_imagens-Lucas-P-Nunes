@@ -1,1 +1,1 @@
-"""Ground-truth matching and vehicle-detection metrics."""
+"""Pareamento com ground truth e metricas de deteccao de veiculos."""

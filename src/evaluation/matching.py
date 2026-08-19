@@ -1,4 +1,4 @@
-"""IoU matching between normalized predictions and manual ground truth."""
+"""Pareamento por IoU entre predicoes normalizadas e ground truth manual."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from src.detection.base import BoundingBox, Detection
 
 @dataclass(frozen=True)
 class GroundTruthBox:
-    """One manually reviewed vehicle box used for evaluation."""
+    """Uma caixa de veiculo revisada manualmente e usada na avaliacao."""
 
     annotation_id: str
     bbox_xyxy: BoundingBox
@@ -17,7 +17,7 @@ class GroundTruthBox:
 
 @dataclass(frozen=True)
 class Match:
-    """A one-to-one prediction and ground-truth association."""
+    """Uma associacao um-para-um entre predicao e ground truth."""
 
     prediction_index: int
     ground_truth_index: int
@@ -25,7 +25,7 @@ class Match:
 
 
 def intersection_over_union(first: BoundingBox, second: BoundingBox) -> float:
-    """Calculate axis-aligned IoU, returning zero for disjoint or invalid-area boxes."""
+    """Calcula IoU alinhado aos eixos e retorna zero para caixas invalidas ou separadas."""
     first_width = max(0.0, first[2] - first[0])
     first_height = max(0.0, first[3] - first[1])
     second_width = max(0.0, second[2] - second[0])
@@ -43,7 +43,7 @@ def intersection_over_union(first: BoundingBox, second: BoundingBox) -> float:
 def greedy_match(
     predictions: list[Detection], ground_truth: list[GroundTruthBox], iou_threshold: float
 ) -> list[Match]:
-    """Match high-confidence predictions to one unmatched ground-truth box each."""
+    """Associa predicoes confiaveis a uma unica caixa ainda nao pareada."""
     if not 0.0 < iou_threshold <= 1.0:
         raise ValueError("iou_threshold must be in the interval (0, 1].")
 

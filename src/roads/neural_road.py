@@ -1,4 +1,4 @@
-"""Mask2Former road highlighting used by the synchronous demonstration pipeline."""
+"""Destaque de vias com Mask2Former usado pelo pipeline sincrono de demonstracao."""
 
 from __future__ import annotations
 
@@ -12,10 +12,10 @@ from src.roads.opencv_road import RoadHighlight
 
 
 class Mask2FormerRoadHighlighter:
-    """Create a road overlay from a locally cached Mask2Former semantic segmenter.
+    """Cria um overlay de vias a partir de um segmentador Mask2Former em cache local.
 
-    The model is intentionally loaded from the project cache only. Downloading a large
-    artifact during an API request would make the application slow and non-reproducible.
+    O modelo e carregado propositalmente apenas do cache do projeto. Baixar um artefato
+    grande durante uma requisicao da API tornaria a aplicacao lenta e nao reproduzivel.
     """
 
     def __init__(
@@ -63,7 +63,7 @@ class Mask2FormerRoadHighlighter:
         self.model.eval()
 
     def highlight(self, image: np.ndarray) -> RoadHighlight:
-        """Return the road-class mask and a warm-coloured RGB overlay for one image."""
+        """Retorna a mascara da classe de via e um overlay RGB quente para uma imagem."""
         _validate_rgb_image(image)
         inputs = self.processor(images=Image.fromarray(image), return_tensors="pt")
         inputs = {name: value.to(self.device) for name, value in inputs.items()}

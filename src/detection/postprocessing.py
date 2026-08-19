@@ -1,4 +1,4 @@
-"""Post-processing rules applied after every detector reaches the vehicle ontology."""
+"""Regras aplicadas apos cada detector atingir a ontologia comum de veiculos."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from src.detection.base import BoundingBox, Detection
 def suppress_vehicle_duplicates(
     detections: list[Detection], iou_threshold: float = 0.5, containment_threshold: float = 0.8
 ) -> list[Detection]:
-    """Keep the highest-confidence box when boxes overlap or one substantially contains another."""
+    """Mantem a caixa de maior confianca quando caixas se sobrepoem ou se contem."""
     if not 0.0 < iou_threshold <= 1.0:
         raise ValueError("iou_threshold must be in the interval (0, 1].")
     if not 0.0 < containment_threshold <= 1.0:

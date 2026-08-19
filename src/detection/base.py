@@ -1,4 +1,4 @@
-"""Shared contracts for interchangeable vehicle detectors."""
+"""Contratos compartilhados por detectores de veiculos intercambiaveis."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ OrientedBox: TypeAlias = tuple[
 
 @dataclass(frozen=True)
 class Detection:
-    """A vehicle prediction normalized to the project-wide representation."""
+    """Uma predicao de veiculo normalizada para a representacao comum do projeto."""
 
     bbox_xyxy: BoundingBox
     score: float
@@ -34,7 +34,7 @@ class Detection:
 
 
 class Detector(Protocol):
-    """Contract implemented by normal and tiled vehicle detectors."""
+    """Contrato implementado por detectores normais e com inferencia em fatias."""
 
     def predict(self, image: np.ndarray) -> list[Detection]:
-        """Return vehicle predictions for an RGB image."""
+        """Retorna predicoes de veiculos para uma imagem RGB."""

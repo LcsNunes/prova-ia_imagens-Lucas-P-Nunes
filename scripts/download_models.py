@@ -1,4 +1,4 @@
-"""Download the declared model weights without versioning binary artifacts in Git."""
+"""Baixa os pesos declarados sem versionar artefatos binarios no Git."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ DEFAULT_CACHE_DIR = ROOT / "cache" / "huggingface"
 
 
 def read_registry(path: Path) -> dict[str, dict[str, str]]:
-    """Load and validate the minimal model metadata needed for reproducible downloads."""
+    """Carrega e valida os metadados minimos para downloads reproduziveis."""
     payload = yaml.safe_load(path.read_text(encoding="utf-8"))
     models = payload.get("models") if isinstance(payload, dict) else None
     if not isinstance(models, dict):
@@ -28,7 +28,7 @@ def read_registry(path: Path) -> dict[str, dict[str, str]]:
 
 
 def read_road_registry(path: Path) -> dict[str, dict[str, str]]:
-    """Load optional Hugging Face road-segmentation artifacts from the same manifest."""
+    """Carrega artefatos opcionais de vias do Hugging Face no mesmo manifesto."""
     payload = yaml.safe_load(path.read_text(encoding="utf-8"))
     road_models = payload.get("road_models", {}) if isinstance(payload, dict) else {}
     if not isinstance(road_models, dict):
@@ -37,7 +37,7 @@ def read_road_registry(path: Path) -> dict[str, dict[str, str]]:
 
 
 def sha256(path: Path) -> str:
-    """Return the SHA-256 digest for a downloaded weight file."""
+    """Retorna o hash SHA-256 de um arquivo de pesos baixado."""
     digest = hashlib.sha256()
     with path.open("rb") as model_file:
         for chunk in iter(lambda: model_file.read(1024 * 1024), b""):
@@ -46,7 +46,7 @@ def sha256(path: Path) -> str:
 
 
 def download_model(metadata: dict[str, str], destination: Path) -> str:
-    """Download one model atomically, validating its declared SHA-256 when available."""
+    """Baixa um modelo atomicamente e valida seu SHA-256 declarado quando disponivel."""
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.exists():
         digest = sha256(destination)
@@ -69,7 +69,7 @@ def download_model(metadata: dict[str, str], destination: Path) -> str:
 
 
 def download_road_model(metadata: dict[str, str], cache_dir: Path) -> Path:
-    """Download one pinned Hugging Face model snapshot into the project cache."""
+    """Baixa um snapshot fixado do Hugging Face para o cache do projeto."""
     return Path(
         snapshot_download(
             repo_id=metadata["repository"],

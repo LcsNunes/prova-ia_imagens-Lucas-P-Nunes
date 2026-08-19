@@ -1,4 +1,4 @@
-"""Configuration loading shared by experiments and the application."""
+"""Carregamento de configuracao compartilhado por experimentos e aplicacao."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import yaml
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
-    """Load a YAML mapping and reject empty or non-mapping configuration files."""
+    """Carrega um mapeamento YAML e rejeita configuracoes vazias ou fora do formato."""
     with path.open("r", encoding="utf-8") as config_file:
         config = yaml.safe_load(config_file)
 
