@@ -173,6 +173,20 @@ Mantendo modelo, confidence `0.25`, fatia, imagem e ground truth, dois testes al
 
 Nenhuma das duas hipoteses melhorou os veiculos ocluidos: ambas reduziram F1 e aumentaram a latencia. Portanto, `imgsz=1024` e overlap de 20% foram mantidos.
 
+### Avaliacao externa de generalizacao
+
+Tres imagens diurnas externas foram usadas somente depois de congelar a configuracao final. Elas nao participaram de treinamento, fine-tuning ou escolha de modelo, confidence e SAHI. As imagens sao capturas de tela redimensionadas do dataset [UAV-OBB](https://data.mendeley.com/datasets/6snrjwcpkh/4), disponibilizado sob [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); a proveniencia e a alteracao feita nos arquivos estao registradas em [`data/external/README.md`](data/external/README.md).
+
+Como as capturas alteram a geometria das imagens originais, os rotulos OBB do dataset nao foram reutilizados. Cada imagem recebeu pre-anotacoes e revisao humana antes da avaliacao. A imagem noturna permaneceu como teste qualitativo de cenario adverso e nao compoe as metricas agregadas.
+
+| Imagem | Ground truth | Predicoes | TP | FP | FN | Precision | Recall | F1 | Count error |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `testeviario1.jpg` | 20 | 19 | 19 | 0 | 1 | 1.000 | 0.950 | 0.974 | 1 |
+| `testeviario2.jpg` | 25 | 25 | 25 | 0 | 0 | 1.000 | 1.000 | 1.000 | 0 |
+| `testeviario3.jpg` | 50 | 50 | 49 | 1 | 1 | 0.980 | 0.980 | 0.980 | 0 |
+
+No agregado: 93 TP, 1 FP e 2 FN, com Precision micro `0.989`, Recall micro `0.979` e F1 micro `0.984`. O terceiro caso reforca por que erro de contagem nao e suficiente: um FP e um FN se compensaram na contagem, embora a deteccao nao tenha sido perfeita.
+
 ## Malha viaria
 
 ### Integracao final
@@ -220,8 +234,8 @@ O workflow [`ci.yml`](.github/workflows/ci.yml) e executado em push para `develo
 
 ## Limitacoes e proximos passos
 
-- Ha apenas uma imagem de avaliacao; resultados nao representam uma distribuicao completa.
-- O ground truth atual teve pre-anotacao do modelo aereo e expansao manual apos auditoria visual; ele e uma referencia de estudo de caso, nao um teste independente.
+- A selecao inicial da configuracao foi baseada na imagem da prova; as tres imagens externas ampliam a verificacao, mas ainda nao representam uma distribuicao completa de cidades, altitudes e cameras.
+- Os ground truths tiveram pre-anotacao do modelo aereo e revisao manual; eles sao referencias de estudo de caso, nao um teste independente anotado do zero.
 - OBB e comparado como bounding box alinhada aos eixos para manter uma unica metrica de matching; uma evolucao pode avaliar IoU orientado.
 - A inferencia SAHI melhora recall, mas aumenta a latencia por imagem.
 - A camada de vias usa um modelo pre-treinado, mas ainda nao possui ground truth independente; portanto, sua avaliacao e visual.
