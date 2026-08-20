@@ -1,36 +1,36 @@
-# Drone vehicle inspection
+# Detecção de Veículos com Drone
 
-Prova pratica de visao computacional para detectar e contar veiculos em uma imagem aerea capturada por drone. A entrega prioriza a deteccao de veiculos; a malha viaria e um recurso visual secundario, apresentado por segmentacao semantica e avaliado de forma qualitativa.
+Prova prática de visão computacional para detectar e contar veículos em uma imagem aérea capturada por drone. A entrega prioriza a detecção de veículos; a malha viária é um recurso visual secundário, apresentado por segmentação semântica e avaliado de forma qualitativa.
 
-## Visao geral
+## Visão geral
 
-A aplicacao recebe uma imagem, valida seu conteudo, executa deteccao sincrona, segmenta a camada de vias e devolve as visualizacoes de veiculos, vias e composicao. O detector final foi escolhido por experimentos controlados, nao por suposicao:
+A aplicação recebe uma imagem, valida seu conteúdo, executa detecção síncrona, segmenta a camada de vias e devolve as visualizações de veículos, vias e composição. O detector final foi escolhido por experimentos controlados, não por suposição:
 
-| Configuracao final | Valor |
+| Configuração final | Valor |
 | --- | --- |
 | Modelo | `yolo11n-obb.pt` treinado em DOTA v1 |
-| Ontologia da aplicacao | `vehicle` |
+| Ontologia da aplicação | `vehicle` |
 | Confidence | `0.15` |
-| Inferencia | SAHI, fatias de 512 px e overlap de 20% |
+| Inferência | SAHI, fatias de 512 px e overlap de 20% |
 | Dispositivo observado | NVIDIA GeForce RTX 5060 8 GB, CUDA 12.8 |
-| Resultado da configuracao final | F1 `0.895`, recall `0.855`, erro absoluto de contagem `5` |
+| Resultado da configuração final | F1 `0.895`, recall `0.855`, erro absoluto de contagem `5` |
 
-O resultado acima e valido para a imagem da prova e para o ground truth revisado deste repositorio. Ele nao deve ser interpretado como medida de generalizacao para novas cidades, cameras ou altitudes.
+O resultado acima é válido para a imagem da prova e para o ground truth revisado deste repositório. Ele não deve ser interpretado como medida de generalização para novas cidades, câmeras ou altitudes.
 
-## Problema e estrategia
+## Problema e estratégia
 
-A imagem original, extraida do PDF da prova, mede 2048 x 1534 px. Veiculos ocupam poucos pixels e podem estar orientados de formas variadas. Por isso foram comparados:
+A imagem original, extraída do PDF da prova, mede 2048 x 1534 px. Veículos ocupam poucos pixels e podem estar orientados de formas variadas. Por isso, foram comparados:
 
-1. YOLO11 generalista pre-treinado em COCO;
-2. YOLO11-OBB especializado em imagens aereas/DOTA;
-3. inferencia normal e tiled inference com SAHI.
+1. YOLO11 generalista pré-treinado em COCO;
+2. YOLO11-OBB especializado em imagens aéreas/DOTA;
+3. inferência normal e tiled inference com SAHI.
 
-As classes COCO `car`, `motorcycle`, `bus` e `truck`, e as classes aereas `small vehicle` e `large vehicle`, sao normalizadas para o unico conceito de negocio `vehicle`. A avaliacao mede se o veiculo foi localizado, e nao se carro, onibus ou caminhao foram classificados com a classe fina correta.
+As classes COCO `car`, `motorcycle`, `bus` e `truck`, e as classes aéreas `small vehicle` e `large vehicle`, são normalizadas para o único conceito de negócio `vehicle`. A avaliação mede se o veículo foi localizado, e não se carro, ônibus ou caminhão foram classificados com a classe fina correta.
 
 ## Arquitetura
 
 ```text
-browser -> FastAPI -> validacao de imagem -> pipeline sincrono
+browser -> FastAPI -> validação de imagem -> pipeline síncrono
                                              |-> detector YOLO / SAHI
                                              |-> Mask2Former para vias
                                              `-> overlays JPEG + metadados
@@ -38,10 +38,10 @@ browser -> FastAPI -> validacao de imagem -> pipeline sincrono
 
 ```text
 src/
-├── api/            # FastAPI, contrato e validacao de upload
-├── detection/      # adaptadores YOLO, SAHI, ontologia e deduplicacao
-├── evaluation/     # ground truth, matching IoU, metricas e benchmark
-├── roads/          # destaque deliberadamente simples com OpenCV
+├── api/            # FastAPI, contrato e validação de upload
+├── detection/      # adaptadores YOLO, SAHI, ontologia e deduplicação
+├── evaluation/     # ground truth, matching IoU, métricas e benchmark
+├── roads/          # destaque de vias com OpenCV e Mask2Former
 ├── visualization/  # caixas e imagens RGB
 ├── web/            # HTML, CSS e JavaScript servidos pelo FastAPI
 ├── config.py
@@ -49,9 +49,9 @@ src/
 └── pipeline.py
 ```
 
-O notebook e o laboratorio de decisao; o codigo em `src/` representa a solucao escolhida.
+O notebook é o laboratório de decisão; o código em `src/` representa a solução escolhida.
 
-## Instalacao e execucao local
+## Instalação e execução local
 
 Requer Python 3.10. Em Windows PowerShell:
 
@@ -65,9 +65,9 @@ python scripts/download_models.py --road-model mask2former_satellite
 python -m uvicorn src.api.app:app --reload
 ```
 
-Abra `http://127.0.0.1:8000`. A pagina permite upload, mostra a imagem original, as deteccoes, a contagem, modelo, SAHI, confidence, tempo e a camada secundaria de via.
+Abra `http://127.0.0.1:8000`. A página permite upload, mostra a imagem original, as detecções, a contagem, o modelo, SAHI, confidence, tempo e a camada secundária de via.
 
-O padrao `DEVICE=auto` usa CUDA quando o PyTorch a encontra. Para forcar CPU, use `DEVICE=cpu`; para forcar a RTX, use `DEVICE=cuda:0`.
+O padrão `DEVICE=auto` usa CUDA quando o PyTorch a encontra. Para forçar CPU, use `DEVICE=cpu`; para forçar a RTX, use `DEVICE=cuda:0`.
 
 ```powershell
 $env:DEVICE = "cuda:0"
@@ -77,7 +77,7 @@ python -m uvicorn src.api.app:app --reload
 
 ## Modelos
 
-Pesos nao sao versionados. O manifesto [`configs/model_registry.yaml`](configs/model_registry.yaml) registra nome, release, URL e SHA-256; o script valida o digest quando o peso e obtido ou reutilizado.
+Pesos não são versionados. O manifesto [`configs/model_registry.yaml`](configs/model_registry.yaml) registra nome, release, URL e SHA-256; o script valida o digest quando o peso é obtido ou reutilizado.
 
 ```powershell
 # Baseline e variantes usadas nos experimentos
@@ -89,12 +89,12 @@ python scripts/download_models.py --model aerial_yolo11m_obb
 
 ## API
 
-| Metodo e rota | Uso |
+| Método e rota | Uso |
 | --- | --- |
 | `GET /api/health` | verifica se o pipeline foi carregado |
-| `POST /api/analyses` | recebe um campo multipart `image` e devolve a analise |
+| `POST /api/analyses` | recebe um campo multipart `image` e devolve a análise |
 
-`POST /api/analyses` aceita JPEG, PNG e WEBP apos validar os bytes reais do arquivo, com limite configuravel de tamanho e pixels. A resposta possui `vehicle_count`, `model_name`, `sahi_enabled`, `confidence`, `inference_ms`, `detections_image` e `roads_image`. As duas imagens sao JPEGs em data URL para a interface usar sem gravar uploads no disco.
+`POST /api/analyses` aceita JPEG, PNG e WEBP após validar os bytes reais do arquivo, com limite configurável de tamanho e pixels. A resposta possui `vehicle_count`, `model_name`, `sahi_enabled`, `confidence`, `inference_ms`, `detections_image` e `roads_image`. As duas imagens são JPEGs em data URL para a interface usar sem gravar uploads no disco.
 
 Exemplo:
 
@@ -102,50 +102,50 @@ Exemplo:
 curl.exe -X POST http://127.0.0.1:8000/api/analyses -F "image=@data/raw/drone_scene.jpg"
 ```
 
-Erros de upload retornam `422` com um codigo e mensagem segura; indisponibilidade do modelo retorna `503`. A inferencia e propositalmente sincrona, sem filas, Redis ou workers.
+Erros de upload retornam `422` com um código e mensagem segura; indisponibilidade do modelo retorna `503`. A inferência é propositalmente síncrona, sem filas, Redis ou workers.
 
-Atualizacao da composicao visual: a resposta tambem inclui os tempos separados de veiculos e vias, alem da imagem combinada. A interface exibe caixas ciano para veiculos e camada laranja para vias; as caixas sao desenhadas por ultimo para continuarem legiveis.
+Atualização da composição visual: a resposta também inclui os tempos separados de veículos e vias, além da imagem combinada. A interface exibe caixas ciano para veículos e camada laranja para vias; as caixas são desenhadas por último para continuarem legíveis.
 
-## Ground truth e metricas
+## Ground truth e métricas
 
-[`data/annotations/ground_truth.json`](data/annotations/ground_truth.json) contem 55 caixas, somente com a categoria `vehicle`, alem de dimensoes e SHA-256 da imagem. O fluxo no notebook permite criar ou revisar caixas manualmente com `RectangleSelector`.
+[`data/annotations/ground_truth.json`](data/annotations/ground_truth.json) contém 55 caixas, somente com a categoria `vehicle`, além de dimensões e SHA-256 da imagem. O fluxo no notebook permite criar ou revisar caixas manualmente com `RectangleSelector`.
 
-As visualizacoes de benchmark usam renderizacao estatica por padrao, evitando dependencia do widget JavaScript do VS Code. A celula de anotacao manual permanece interativa e so deve ser executada quando for necessario editar o ground truth.
+As visualizações de benchmark usam renderização estática por padrão, evitando dependência do widget JavaScript do VS Code. A célula de anotação manual permanece interativa e só deve ser executada quando for necessário editar o ground truth.
 
-O arquivo atual foi iniciado por pre-anotacoes do modelo aereo e revisado manualmente, incluindo uma expansao para veiculos parcialmente ocluidos. Essa escolha acelera a prova, mas e uma fonte potencial de vies de selecao; por transparencia, ela consta no proprio JSON e deve ser substituida por anotacao independente em uma avaliacao de produto.
+O arquivo atual foi iniciado por pré-anotações do modelo aéreo e revisado manualmente, incluindo uma expansão para veículos parcialmente ocluídos. Essa escolha acelera a prova, mas é uma fonte potencial de viés de seleção; por transparência, ela consta no próprio JSON e deve ser substituída por anotação independente em uma avaliação de produto.
 
-Predicoes e ground truth sao pareados de forma gulosa por score quando `IoU >= 0.50`. Alem de `Absolute Count Error`, o projeto calcula TP, FP, FN, precision, recall e F1, impedindo que falsos positivos e falsos negativos se cancelem apenas na contagem.
+Predições e ground truth são pareados de forma gulosa por score quando `IoU >= 0.50`. Além de `Absolute Count Error`, o projeto calcula TP, FP, FN, precision, recall e F1, impedindo que falsos positivos e falsos negativos se cancelem apenas na contagem.
 
 ## Experimentos e resultados
 
-Todos os resultados detalhados e metadados do ambiente estao em [`outputs/metrics/benchmark_results.json`](outputs/metrics/benchmark_results.json). As medidas usaram a mesma imagem, o mesmo ground truth, `imgsz=1024`, FP32, RTX 5060, um warm-up e tres repeticoes cronometradas; a tabela reporta a mediana. Arquivos gerados grandes continuam ignorados pelo Git.
+Todos os resultados detalhados e metadados do ambiente estão em [`outputs/metrics/benchmark_results.json`](outputs/metrics/benchmark_results.json). As medidas usaram a mesma imagem, o mesmo ground truth, `imgsz=1024`, FP32, RTX 5060, um warm-up e três repetições cronometradas; a tabela reporta a mediana. Arquivos gerados grandes continuam ignorados pelo Git.
 
 ### Nano x Small x Medium
 
-Nesta etapa as demais variaveis foram mantidas fixas e SAHI ficou desligado.
+Nesta etapa, as demais variáveis foram mantidas fixas e SAHI ficou desligado.
 
-| Modelo aereo | TP | FP | FN | Precision | Recall | F1 | Count error | Mediana | Pico GPU |
+| Modelo aéreo | TP | FP | FN | Precision | Recall | F1 | Count error | Mediana | Pico GPU |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | YOLO11n-OBB | 44 | 3 | 11 | **0.936** | 0.800 | **0.863** | 8 | **50.3 ms** | **88.3 MB** |
 | YOLO11s-OBB | 44 | 4 | 11 | 0.917 | 0.800 | 0.854 | **7** | 52.3 ms | 161.5 MB |
 | YOLO11m-OBB | 44 | 4 | 11 | 0.917 | 0.800 | 0.854 | **7** | 55.5 ms | 266.6 MB |
 
-O Nano obteve o maior F1 e a menor latencia/memoria. Small e Medium tiveram erro de contagem uma unidade menor, mas F1 inferior e custo maior; por isso nao foram escolhidos sem evidencias em imagens independentes.
+O Nano obteve o maior F1 e a menor latência/memória. Small e Medium tiveram erro de contagem uma unidade menor, mas F1 inferior e custo maior; por isso, não foram escolhidos, pois não apresentaram evidências de ganho em imagens independentes.
 
 ### Benchmark principal 2 x 2
 
-| Dominio / inferencia | TP | FP | FN | Precision | Recall | F1 | Count error | Mediana |
+| Domínio / inferência | TP | FP | FN | Precision | Recall | F1 | Count error | Mediana |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | COCO normal | 0 | 1 | 55 | 0.000 | 0.000 | 0.000 | 54 | **41.2 ms** |
 | COCO + SAHI 512 | 0 | 4 | 55 | 0.000 | 0.000 | 0.000 | 51 | 796.8 ms |
 | Aerial/DOTA normal | 44 | 3 | 11 | 0.936 | 0.800 | 0.863 | 8 | 52.8 ms |
 | Aerial/DOTA + SAHI 512 | **46** | **1** | **9** | **0.979** | **0.836** | **0.902** | 8 | 888.1 ms |
 
-A especializacao aerea foi decisiva nesta imagem. SAHI aumentou F1 de 0.863 para 0.902 e reduziu FNs de 11 para 9, com custo material de latencia. Os nove FNs restantes correspondem aos veiculos parcialmente ocluidos ou cortados que passaram a fazer parte do ground truth revisado.
+A especialização aérea foi decisiva nesta imagem. SAHI aumentou F1 de 0.863 para 0.902 e reduziu FNs de 11 para 9, com custo material de latência. Os nove FNs restantes correspondem aos veículos parcialmente ocluídos ou cortados que passaram a fazer parte do ground truth revisado.
 
 ### Confidence e tamanho da fatia
 
-Para o Nano aereo com SAHI:
+Para o Nano aéreo com SAHI:
 
 | Confidence | TP | FP | FN | F1 | Count error |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -159,45 +159,45 @@ Para o Nano aereo com SAHI:
 | **512** | **46** | **1** | **9** | **0.902** | 8 | 884.2 ms |
 | 640 | 44 | 3 | 11 | 0.863 | 8 | **652.5 ms** |
 
-Escolhi `confidence=0.15` e fatia 512 para a configuracao final porque recupera um TP e reduz o erro de contagem de 8 para 5, a metrica mais proxima do objetivo de estimar o total de veiculos. O custo e dois FPs adicionais e queda pequena de F1 (0.902 para 0.895) frente a `0.25`; essa troca fica registrada explicitamente. Isso nao e um grid search nem uma regra universal: foi uma verificacao pequena para entender o comportamento da cena e devera ser revalidada em imagens independentes.
+Escolhi `confidence=0.15` e fatia de 512 para a configuração final porque recupera um TP e reduz o erro de contagem de 8 para 5, a métrica mais próxima do objetivo de estimar o total de veículos. O custo é de dois FPs adicionais e uma pequena queda de F1 (de 0.902 para 0.895) frente a `0.25`; essa troca fica registrada explicitamente. Isso não é um grid search nem uma regra universal: foi uma verificação pequena para entender o comportamento da cena e deverá ser revalidada em imagens independentes.
 
-### Testes direcionados para oclusao
+### Testes direcionados para oclusão
 
-Mantendo modelo, confidence `0.25`, fatia, imagem e ground truth, dois testes alteraram apenas uma variavel por vez em relacao ao controle de `imgsz=1024` e overlap de 20%.
+Mantendo modelo, confidence `0.25`, fatia, imagem e ground truth, dois testes alteraram apenas uma variável por vez em relação ao controle de `imgsz=1024` e overlap de 20%.
 
-| Configuracao | TP | FP | FN | F1 | Count error | Mediana |
+| Configuração | TP | FP | FN | F1 | Count error | Mediana |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | Controle (1024, 20%) | **46** | **1** | **9** | **0.902** | **8** | **839.1 ms** |
 | `imgsz=1280`, 20% | 37 | 2 | 18 | 0.787 | 16 | 940.5 ms |
 | 1024, overlap 30% | 44 | 3 | 11 | 0.863 | 8 | 1004.3 ms |
 
-Nenhuma das duas hipoteses melhorou os veiculos ocluidos: ambas reduziram F1 e aumentaram a latencia. Portanto, `imgsz=1024` e overlap de 20% foram mantidos.
+Nenhuma das duas hipóteses melhorou os veículos ocluídos: ambas reduziram F1 e aumentaram a latência. Portanto, `imgsz=1024` e overlap de 20% foram mantidos.
 
-### Avaliacao externa de generalizacao
+### Avaliação externa de generalização
 
-Tres imagens diurnas externas foram usadas somente depois de congelar a configuracao final. Elas nao participaram de treinamento, fine-tuning ou escolha de modelo, confidence e SAHI. As imagens sao capturas de tela redimensionadas do dataset [UAV-OBB](https://data.mendeley.com/datasets/6snrjwcpkh/4), disponibilizado sob [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); a proveniencia e a alteracao feita nos arquivos estao registradas em [`data/external/README.md`](data/external/README.md).
+Três imagens diurnas externas foram usadas somente depois de congelar a configuração final. Elas não participaram de treinamento, fine-tuning ou escolha de modelo, confidence e SAHI. As imagens são capturas de tela redimensionadas do dataset [UAV-OBB](https://data.mendeley.com/datasets/6snrjwcpkh/4), disponibilizado sob [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); a procedência e as alterações feitas nos arquivos estão registradas em [`data/external/README.md`](data/external/README.md).
 
-Como as capturas alteram a geometria das imagens originais, os rotulos OBB do dataset nao foram reutilizados. Cada imagem recebeu pre-anotacoes e revisao humana antes da avaliacao. A imagem noturna permaneceu como teste qualitativo de cenario adverso e nao compoe as metricas agregadas.
+Como as capturas alteram a geometria das imagens originais, os rótulos OBB do dataset não foram reutilizados. Cada imagem recebeu pré-anotações e uma revisão humana antes da avaliação. A imagem noturna permaneceu como teste qualitativo de cenário adverso e não compõe as métricas agregadas.
 
-| Imagem | Ground truth | Predicoes | TP | FP | FN | Precision | Recall | F1 | Count error |
+| Imagem | Ground truth | Predições | TP | FP | FN | Precision | Recall | F1 | Count error |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | `testeviario1.jpg` | 20 | 19 | 19 | 0 | 1 | 1.000 | 0.950 | 0.974 | 1 |
 | `testeviario2.jpg` | 25 | 25 | 25 | 0 | 0 | 1.000 | 1.000 | 1.000 | 0 |
 | `testeviario3.jpg` | 50 | 50 | 49 | 1 | 1 | 0.980 | 0.980 | 0.980 | 0 |
 
-No agregado: 93 TP, 1 FP e 2 FN, com Precision micro `0.989`, Recall micro `0.979` e F1 micro `0.984`. O terceiro caso reforca por que erro de contagem nao e suficiente: um FP e um FN se compensaram na contagem, embora a deteccao nao tenha sido perfeita.
+No agregado: 93 TP, 1 FP e 2 FN, com Precision micro `0.989`, Recall micro `0.979` e F1 micro `0.984`. O terceiro caso reforça por que erro de contagem não é suficiente: um FP e um FN se compensaram na contagem, embora a detecção não tenha sido perfeita.
 
-## Malha viaria
+## Malha viária
 
-### Integracao final
+### Integração final
 
-A interface usa Mask2Former Satellite, obtido em uma revisao fixa e mantido no cache local do projeto. A classe de via foi auditada visualmente no notebook; como nao ha mascaras ground truth de estrada, este resultado e qualitativo e nao deve ser reportado como IoU, precision ou recall.
+A interface usa Mask2Former Satellite, obtido em uma revisão fixa e mantido no cache local do projeto. A classe de via foi auditada visualmente no notebook; como não há máscaras de ground truth de estrada, este resultado é qualitativo e não deve ser reportado como IoU, precision ou recall.
 
-YOLO com SAHI e Mask2Former executam sequencialmente na mesma requisicao. Eles nao compartilham pesos: o primeiro localiza veiculos e o segundo produz a mascara de vias. A composicao aplica primeiro a camada laranja de vias e desenha as caixas ciano por cima. O modo HSV abaixo permanece como baseline e fallback configuravel.
+YOLO com SAHI e Mask2Former executam sequencialmente na mesma requisição. Eles não compartilham pesos: o primeiro localiza veículos e o segundo produz a máscara de vias. A composição aplica primeiro a camada laranja de vias e desenha as caixas ciano por cima. O modo HSV abaixo permanece como baseline e fallback configurável.
 
-[`src/roads/opencv_road.py`](src/roads/opencv_road.py) usa HSV, threshold, fechamento/abertura morfologica, filtros por componentes conectados e overlay semitransparente. Ela indica uma **regiao provavel de pavimento/via**, nao uma segmentacao semantica de estrada.
+[`src/roads/opencv_road.py`](src/roads/opencv_road.py) usa HSV, threshold, fechamento/abertura morfológica, filtros por componentes conectados e overlay semitransparente. Ela indica uma **região provável de pavimento/via**, não uma segmentação semântica de estrada.
 
-A limitacao e intencional: tempo e profundidade tecnica foram concentrados na deteccao de veiculos. Iluminacao, sombras, material da pista, telhados com cor semelhante, clima e cameras diferentes podem degradar o resultado. Uma proxima versao usaria segmentacao treinada e imagens variadas para avaliar IoU de via.
+A limitação é intencional: tempo e profundidade técnica foram concentrados na detecção de veículos. Iluminação, sombras, material da pista, telhados com cor semelhante, clima e câmeras diferentes podem degradar o resultado. Uma próxima versão usaria segmentação treinada e imagens variadas para avaliar IoU de via.
 
 ## Testes e qualidade
 
@@ -207,11 +207,11 @@ ruff check .
 ruff format --check .
 ```
 
-Os testes cobrem ontologia, IoU e matching, metricas, deduplicacao, ground truth, downloads com checksum, OpenCV, pipeline, validacao de imagem e um smoke test da API. O `pyproject.toml` exige ao menos 80% de cobertura e o pipeline de CI executa lint, formatacao, pytest com coverage e Docker build.
+Os testes cobrem ontologia, IoU e matching, métricas, deduplicação, ground truth, downloads com checksum, OpenCV, pipeline, validação de imagem e um smoke test da API. O `pyproject.toml` exige ao menos 80% de cobertura e o pipeline de CI executa lint, formatação, pytest com coverage e Docker build.
 
 ## Docker
 
-O projeto usa um unico container FastAPI. Primeiro baixe o peso final para o volume local e depois suba a aplicacao:
+O projeto usa um único container FastAPI. Primeiro, baixe o peso final para o volume local e depois suba a aplicação:
 
 ```powershell
 docker compose build
@@ -226,22 +226,21 @@ Abra `http://127.0.0.1:8000`. Para expor a GPU para o Docker Desktop com NVIDIA 
 docker compose run --rm --gpus all --service-ports -e DEVICE=cuda:0 app
 ```
 
-Sem GPU exposta ao container, `DEVICE=auto` faz fallback para CPU. O compose nao obriga GPU, o que preserva a demonstracao em maquinas sem NVIDIA.
+Sem GPU exposta ao container, `DEVICE=auto` faz fallback para CPU. O compose não obriga GPU, o que preserva a demonstração em máquinas sem NVIDIA.
 
 ## CI
 
-O workflow [`ci.yml`](.github/workflows/ci.yml) e executado em push para `develop` e `main`, e em pull request para `main`. Ele faz checkout, instala Python 3.10 e dependencias, roda Ruff, pytest/coverage e build da imagem Docker.
+O workflow [`ci.yml`](.github/workflows/ci.yml) é executado em push para `develop` e `main`, e em pull request para `main`. Ele faz checkout, instala Python 3.10 e dependências, roda Ruff, pytest/coverage e build da imagem Docker.
 
-## Limitacoes e proximos passos
+## Limitações e próximos passos
 
-- A selecao inicial da configuracao foi baseada na imagem da prova; as tres imagens externas ampliam a verificacao, mas ainda nao representam uma distribuicao completa de cidades, altitudes e cameras.
-- Os ground truths tiveram pre-anotacao do modelo aereo e revisao manual; eles sao referencias de estudo de caso, nao um teste independente anotado do zero.
-- OBB e comparado como bounding box alinhada aos eixos para manter uma unica metrica de matching; uma evolucao pode avaliar IoU orientado.
-- A inferencia SAHI melhora recall, mas aumenta a latencia por imagem.
-- A camada de vias usa um modelo pre-treinado, mas ainda nao possui ground truth independente; portanto, sua avaliacao e visual.
-- Proximas evolucoes: ground truth independente para novas imagens, conjunto separado de validacao/teste, VisDrone ou fine-tuning leve se houver dados, avaliacao de OBB, e somente depois arquitetura AWS, filas e monitoramento.
+- A seleção inicial da configuração foi baseada na imagem da prova; as três imagens externas ampliam a verificação, mas ainda não representam uma distribuição completa de cidades, altitudes e câmeras.
+- Os ground truths tiveram pré-anotação do modelo aéreo e revisão manual; eles são referências de estudo de caso, não um teste independente anotado do zero.
+- OBB é comparado como bounding box alinhada aos eixos para manter uma única métrica de matching; uma evolução pode avaliar IoU orientado.
+- A inferência SAHI melhora recall, mas aumenta a latência por imagem.
+- A camada de vias usa um modelo pré-treinado, mas ainda não possui ground truth independente; portanto, sua avaliação é visual.
+- Próximas evoluções: ground truth independente para novas imagens, conjunto separado de validação/teste, VisDrone ou fine-tuning leve se houver dados, avaliação de OBB e, somente depois, arquitetura AWS, filas e monitoramento.
 
 ## Uso de IA
 
-Este repositorio registra uso de Codex/IA como apoio para scaffolding, sugestoes de implementacao, testes e documentacao. As decisoes tecnicas foram revisadas pelo desenvolvedor; os experimentos foram executados localmente na RTX 5060 e os resultados aqui listados foram registrados a partir dessas execucoes. O codigo e as anotacoes devem ser revisados manualmente pelo desenvolvedor antes da entrega final.
-
+Este repositório registra o uso de Codex/IA como apoio ao desenvolvimento do código, aos testes e à documentação. As decisões técnicas e as escolhas arquiteturais foram feitas pelo desenvolvedor; os experimentos foram executados localmente na RTX 5060, e os resultados aqui listados foram registrados a partir dessas execuções. O código e as anotações foram revisados e testados pelo desenvolvedor.
