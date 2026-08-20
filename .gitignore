@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model artifacts and caches
+models/
+cache/
+Ultralytics/
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# Generated outputs
+outputs/detections/*
+outputs/roads/*
+outputs/comparisons/*
+outputs/metrics/*
+!outputs/**/.gitkeep
+!outputs/metrics/benchmark_results.json
+
+# Imagens externas so entram no repositorio quando sua origem e licenca sao documentadas.
+data/external/*
+!data/external/README.md
+!data/external/testeviario1.jpg
+!data/external/testeviario2.jpg
+!data/external/testeviario3.jpg
+!data/external/testeviario4.jpg
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local configuration
+.env

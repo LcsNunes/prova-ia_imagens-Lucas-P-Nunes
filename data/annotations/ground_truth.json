@@ -1,0 +1,562 @@
+{
+  "schema_version": 1,
+  "annotation_method": "model_assisted_preannotations_manually_reviewed",
+  "image": {
+    "path": "data/raw/drone_scene.jpg",
+    "width": 2048,
+    "height": 1534,
+    "sha256": "9660e2edaabb874e0e03d0dd0ee5d33f969daa18034a23b78ca1d5d81a13d298"
+  },
+  "annotations": [
+    {
+      "id": "vehicle-001",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1698.86,
+        1098.13,
+        1762.91,
+        1130.85
+      ]
+    },
+    {
+      "id": "vehicle-002",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1774.33,
+        1100.96,
+        1838.17,
+        1129.81
+      ]
+    },
+    {
+      "id": "vehicle-003",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1698.07,
+        1171.0,
+        1740.35,
+        1201.12
+      ]
+    },
+    {
+      "id": "vehicle-004",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        560.73,
+        915.65,
+        631.43,
+        947.69
+      ]
+    },
+    {
+      "id": "vehicle-005",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1712.12,
+        1385.39,
+        1780.72,
+        1419.81
+      ]
+    },
+    {
+      "id": "vehicle-006",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1775.54,
+        1207.27,
+        1834.5,
+        1240.35
+      ]
+    },
+    {
+      "id": "vehicle-007",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1773.72,
+        1130.62,
+        1836.76,
+        1163.1
+      ]
+    },
+    {
+      "id": "vehicle-008",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1700.69,
+        1135.3,
+        1764.2,
+        1164.24
+      ]
+    },
+    {
+      "id": "vehicle-009",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        0.0,
+        1030.56,
+        53.67,
+        1058.21
+      ]
+    },
+    {
+      "id": "vehicle-010",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1302.43,
+        1279.92,
+        1361.68,
+        1358.03
+      ]
+    },
+    {
+      "id": "vehicle-011",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        690.75,
+        913.88,
+        747.75,
+        940.17
+      ]
+    },
+    {
+      "id": "vehicle-012",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1713.07,
+        1350.96,
+        1787.91,
+        1383.9
+      ]
+    },
+    {
+      "id": "vehicle-013",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1771.68,
+        1168.35,
+        1833.22,
+        1197.83
+      ]
+    },
+    {
+      "id": "vehicle-014",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1694.1,
+        1208.06,
+        1765.12,
+        1244.36
+      ]
+    },
+    {
+      "id": "vehicle-015",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        63.52,
+        908.37,
+        130.08,
+        940.18
+      ]
+    },
+    {
+      "id": "vehicle-016",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        912.88,
+        914.72,
+        973.45,
+        943.84
+      ]
+    },
+    {
+      "id": "vehicle-017",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1702.77,
+        1243.77,
+        1772.89,
+        1275.22
+      ]
+    },
+    {
+      "id": "vehicle-018",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1342.41,
+        923.99,
+        1400.56,
+        951.5
+      ]
+    },
+    {
+      "id": "vehicle-019",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        416.61,
+        912.14,
+        481.21,
+        944.13
+      ]
+    },
+    {
+      "id": "vehicle-020",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1717.4,
+        1320.34,
+        1782.81,
+        1351.36
+      ]
+    },
+    {
+      "id": "vehicle-021",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1145.47,
+        825.0,
+        1175.28,
+        876.16
+      ]
+    },
+    {
+      "id": "vehicle-022",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        77.07,
+        1028.01,
+        150.65,
+        1062.97
+      ]
+    },
+    {
+      "id": "vehicle-023",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        353.69,
+        964.24,
+        413.32,
+        993.21
+      ]
+    },
+    {
+      "id": "vehicle-024",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        491.58,
+        919.35,
+        550.54,
+        947.23
+      ]
+    },
+    {
+      "id": "vehicle-025",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1427.78,
+        1230.46,
+        1477.36,
+        1294.07
+      ]
+    },
+    {
+      "id": "vehicle-026",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        430.55,
+        1031.25,
+        487.26,
+        1061.38
+      ]
+    },
+    {
+      "id": "vehicle-027",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        516.67,
+        1027.77,
+        586.38,
+        1059.39
+      ]
+    },
+    {
+      "id": "vehicle-028",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        232.93,
+        795.65,
+        271.67,
+        859.43
+      ]
+    },
+    {
+      "id": "vehicle-029",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        4.73,
+        666.15,
+        42.34,
+        733.35
+      ]
+    },
+    {
+      "id": "vehicle-030",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1717.48,
+        1285.39,
+        1741.54,
+        1310.68
+      ]
+    },
+    {
+      "id": "vehicle-031",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1482.84,
+        1098.6,
+        1534.94,
+        1130.72
+      ]
+    },
+    {
+      "id": "vehicle-032",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1527.94,
+        1421.97,
+        1591.57,
+        1476.09
+      ]
+    },
+    {
+      "id": "vehicle-033",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1902.08,
+        1145.27,
+        1964.81,
+        1174.98
+      ]
+    },
+    {
+      "id": "vehicle-034",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        745.29,
+        1030.91,
+        809.63,
+        1062.51
+      ]
+    },
+    {
+      "id": "vehicle-035",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        685.19,
+        1035.13,
+        736.56,
+        1059.6
+      ]
+    },
+    {
+      "id": "vehicle-036",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1338.33,
+        1353.34,
+        1402.99,
+        1438.31
+      ]
+    },
+    {
+      "id": "vehicle-037",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1991.69,
+        1034.45,
+        2047.73,
+        1068.14
+      ]
+    },
+    {
+      "id": "vehicle-038",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        160.32,
+        915.56,
+        222.42,
+        942.02
+      ]
+    },
+    {
+      "id": "vehicle-039",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1552.23,
+        1488.37,
+        1597.1,
+        1534.0
+      ]
+    },
+    {
+      "id": "vehicle-040",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1266.34,
+        1207.21,
+        1322.83,
+        1282.27
+      ]
+    },
+    {
+      "id": "vehicle-041",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1069.46,
+        1032.54,
+        1137.77,
+        1065.37
+      ]
+    },
+    {
+      "id": "vehicle-042",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1841.93,
+        918.88,
+        1910.7,
+        947.73
+      ]
+    },
+    {
+      "id": "vehicle-043",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1534.32,
+        1128.43,
+        1555.25,
+        1160.74
+      ]
+    },
+    {
+      "id": "vehicle-044",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        764.87,
+        910.07,
+        814.97,
+        939.06
+      ]
+    },
+    {
+      "id": "vehicle-045",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1791.37,
+        1193.53,
+        1839.99,
+        1251.52
+      ]
+    },
+    {
+      "id": "vehicle-046",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        995.64,
+        1029.52,
+        1052.56,
+        1070.85
+      ]
+    },
+    {
+      "id": "vehicle-047",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        827.42,
+        1117.03,
+        885.52,
+        1301.31
+      ]
+    },
+    {
+      "id": "vehicle-048",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        45.48,
+        660.48,
+        73.7,
+        725.23
+      ]
+    },
+    {
+      "id": "vehicle-049",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1237.48,
+        733.53,
+        1249.1,
+        791.64
+      ]
+    },
+    {
+      "id": "vehicle-050",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1524.69,
+        1193.4,
+        1551.25,
+        1221.62
+      ]
+    },
+    {
+      "id": "vehicle-051",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1541.29,
+        1231.58,
+        1569.52,
+        1261.47
+      ]
+    },
+    {
+      "id": "vehicle-052",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1554.57,
+        1266.45,
+        1591.1,
+        1297.99
+      ]
+    },
+    {
+      "id": "vehicle-053",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1576.16,
+        1302.97,
+        1606.04,
+        1331.19
+      ]
+    },
+    {
+      "id": "vehicle-054",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1586.12,
+        1332.85,
+        1620.98,
+        1369.38
+      ]
+    },
+    {
+      "id": "vehicle-055",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        1966.3,
+        1244.86,
+        1987.88,
+        1311.27
+      ]
+    }
+  ]
+}

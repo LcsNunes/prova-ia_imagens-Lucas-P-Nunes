@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "image": {
+    "path": "data/raw/drone_scene.jpg",
+    "width": 2048,
+    "height": 1534,
+    "sha256": "9660e2edaabb874e0e03d0dd0ee5d33f969daa18034a23b78ca1d5d81a13d298"
+  },
+  "ground_truth": {
+    "count": 55,
+    "annotation_method": "model_assisted_preannotations_manually_reviewed",
+    "matching_iou_threshold": 0.5
+  },
+  "environment": {
+    "device": "NVIDIA GeForce RTX 5060",
+    "torch": "2.9.1+cu128",
+    "cuda": "12.8",
+    "precision": "FP32",
+    "measurement": "one warm-up followed by three timed repetitions; median reported"
+  },
+  "model_size_benchmark": [
+    {
+      "name": "aerial_n_normal",
+      "model": "yolo11n-obb.pt",
+      "predicted_count": 47,
+      "true_positives": 44,
+      "false_positives": 3,
+      "false_negatives": 11,
+      "precision": 0.9361702128,
+      "recall": 0.8,
+      "f1": 0.862745098,
+      "absolute_count_error": 8,
+      "median_inference_ms": 50.2949,
+      "peak_gpu_memory_mb": 88.2856
+    },
+    {
+      "name": "aerial_s_normal",
+      "model": "yolo11s-obb.pt",
+      "predicted_count": 48,
+      "true_positives": 44,
+      "false_positives": 4,
+      "false_negatives": 11,
+      "precision": 0.9166666667,
+      "recall": 0.8,
+      "f1": 0.854368932,
+      "absolute_count_error": 7,
+      "median_inference_ms": 52.2999,
+      "peak_gpu_memory_mb": 161.5044
+    },
+    {
+      "name": "aerial_m_normal",
+      "model": "yolo11m-obb.pt",
+      "predicted_count": 48,
+      "true_positives": 44,
+      "false_positives": 4,
+      "false_negatives": 11,
+      "precision": 0.9166666667,
+      "recall": 0.8,
+      "f1": 0.854368932,
+      "absolute_count_error": 7,
+      "median_inference_ms": 55.4585,
+      "peak_gpu_memory_mb": 266.6104
+    }
+  ],
+  "controlled_2x2_benchmark": [
+    {
+      "name": "coco_normal",
+      "predicted_count": 1,
+      "true_positives": 0,
+      "false_positives": 1,
+      "false_negatives": 55,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "absolute_count_error": 54,
+      "median_inference_ms": 41.209,
+      "peak_gpu_memory_mb": 168.6641
+    },
+    {
+      "name": "coco_sahi_512",
+      "predicted_count": 4,
+      "true_positives": 0,
+      "false_positives": 4,
+      "false_negatives": 55,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "absolute_count_error": 51,
+      "median_inference_ms": 796.8304,
+      "peak_gpu_memory_mb": 193.2085
+    },
+    {
+      "name": "aerial_normal",
+      "predicted_count": 47,
+      "true_positives": 44,
+      "false_positives": 3,
+      "false_negatives": 11,
+      "precision": 0.9361702128,
+      "recall": 0.8,
+      "f1": 0.862745098,
+      "absolute_count_error": 8,
+      "median_inference_ms": 52.8131,
+      "peak_gpu_memory_mb": 187.7578
+    },
+    {
+      "name": "aerial_sahi_512",
+      "predicted_count": 47,
+      "true_positives": 46,
+      "false_positives": 1,
+      "false_negatives": 9,
+      "precision": 0.9787234043,
+      "recall": 0.8363636364,
+      "f1": 0.9019607843,
+      "absolute_count_error": 8,
+      "median_inference_ms": 888.0892,
+      "peak_gpu_memory_mb": 210.3711
+    }
+  ],
+  "threshold_experiment": [
+    {
+      "confidence": 0.15,
+      "predicted_count": 50,
+      "true_positives": 47,
+      "false_positives": 3,
+      "false_negatives": 8,
+      "precision": 0.94,
+      "recall": 0.8545454545,
+      "f1": 0.8952380952,
+      "absolute_count_error": 5,
+      "median_inference_ms": 884.086,
+      "peak_gpu_memory_mb": 103.4917
+    },
+    {
+      "confidence": 0.25,
+      "predicted_count": 47,
+      "true_positives": 46,
+      "false_positives": 1,
+      "false_negatives": 9,
+      "precision": 0.9787234043,
+      "recall": 0.8363636364,
+      "f1": 0.9019607843,
+      "absolute_count_error": 8,
+      "median_inference_ms": 847.5141,
+      "peak_gpu_memory_mb": 112.585
+    },
+    {
+      "confidence": 0.35,
+      "predicted_count": 43,
+      "true_positives": 42,
+      "false_positives": 1,
+      "false_negatives": 13,
+      "precision": 0.976744186,
+      "recall": 0.7636363636,
+      "f1": 0.8571428571,
+      "absolute_count_error": 12,
+      "median_inference_ms": 850.6833,
+      "peak_gpu_memory_mb": 102.4902
+    },
+    {
+      "confidence": 0.5,
+      "predicted_count": 39,
+      "true_positives": 39,
+      "false_positives": 0,
+      "false_negatives": 16,
+      "precision": 1.0,
+      "recall": 0.7090909091,
+      "f1": 0.829787234,
+      "absolute_count_error": 16,
+      "median_inference_ms": 840.7279,
+      "peak_gpu_memory_mb": 112.585
+    }
+  ],
+  "slice_size_experiment": [
+    {
+      "slice_size": 512,
+      "predicted_count": 47,
+      "true_positives": 46,
+      "false_positives": 1,
+      "false_negatives": 9,
+      "precision": 0.9787234043,
+      "recall": 0.8363636364,
+      "f1": 0.9019607843,
+      "absolute_count_error": 8,
+      "median_inference_ms": 884.2468,
+      "peak_gpu_memory_mb": 122.6797
+    },
+    {
+      "slice_size": 640,
+      "predicted_count": 47,
+      "true_positives": 44,
+      "false_positives": 3,
+      "false_negatives": 11,
+      "precision": 0.9361702128,
+      "recall": 0.8,
+      "f1": 0.862745098,
+      "absolute_count_error": 8,
+      "median_inference_ms": 652.4505,
+      "peak_gpu_memory_mb": 132.7744
+    }
+  ],
+  "targeted_experiment": [
+    {
+      "name": "aerial_sahi_control",
+      "image_size": 1024,
+      "overlap": 0.2,
+      "predicted_count": 47,
+      "true_positives": 46,
+      "false_positives": 1,
+      "false_negatives": 9,
+      "precision": 0.9787234043,
+      "recall": 0.8363636364,
+      "f1": 0.9019607843,
+      "absolute_count_error": 8,
+      "median_inference_ms": 839.0811,
+      "peak_gpu_memory_mb": 221.3408
+    },
+    {
+      "name": "aerial_sahi_imgsz_1280",
+      "image_size": 1280,
+      "overlap": 0.2,
+      "predicted_count": 39,
+      "true_positives": 37,
+      "false_positives": 2,
+      "false_negatives": 18,
+      "precision": 0.9487179487,
+      "recall": 0.6727272727,
+      "f1": 0.7872340426,
+      "absolute_count_error": 16,
+      "median_inference_ms": 940.4628,
+      "peak_gpu_memory_mb": 265.3706
+    },
+    {
+      "name": "aerial_sahi_overlap_030",
+      "image_size": 1024,
+      "overlap": 0.3,
+      "predicted_count": 47,
+      "true_positives": 44,
+      "false_positives": 3,
+      "false_negatives": 11,
+      "precision": 0.9361702128,
+      "recall": 0.8,
+      "f1": 0.862745098,
+      "absolute_count_error": 8,
+      "median_inference_ms": 1004.3365,
+      "peak_gpu_memory_mb": 241.5313
+    }
+  ],
+  "selection": {
+    "model": "yolo11n-obb.pt",
+    "confidence": 0.15,
+    "sahi_enabled": true,
+    "slice_size": 512,
+    "overlap": 0.2,
+    "reason": "At fixed model and SAHI settings, confidence 0.15 reduced absolute count error from 8 to 5 and recovered one true positive relative to 0.25, accepting two additional false positives and a 0.007 F1 decrease."
+  }
+}

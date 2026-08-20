@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "annotation_method": "model_assisted_preannotations_manually_reviewed",
+  "image": {
+    "path": "data/external/testeviario2.jpg",
+    "width": 1151,
+    "height": 647,
+    "sha256": "2b5b303f625290813da04a87a9350245923a3d6bfcd912863431903b9e628b2c"
+  },
+  "annotations": [
+    {
+      "id": "vehicle-001",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        468.39,
+        435.05,
+        506.66,
+        476.58
+      ]
+    },
+    {
+      "id": "vehicle-002",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        704.26,
+        321.29,
+        732.4,
+        353.15
+      ]
+    },
+    {
+      "id": "vehicle-003",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        628.57,
+        386.36,
+        659.72,
+        422.68
+      ]
+    },
+    {
+      "id": "vehicle-004",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        669.95,
+        367.82,
+        700.15,
+        401.44
+      ]
+    },
+    {
+      "id": "vehicle-005",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        645.4,
+        395.41,
+        678.23,
+        431.23
+      ]
+    },
+    {
+      "id": "vehicle-006",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        694.57,
+        261.87,
+        723.64,
+        292.26
+      ]
+    },
+    {
+      "id": "vehicle-007",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        594.93,
+        354.56,
+        626.59,
+        389.62
+      ]
+    },
+    {
+      "id": "vehicle-008",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        580.62,
+        264.23,
+        600.8,
+        296.3
+      ]
+    },
+    {
+      "id": "vehicle-009",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        556.57,
+        398.27,
+        587.85,
+        433.21
+      ]
+    },
+    {
+      "id": "vehicle-010",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        682.71,
+        252.05,
+        707.81,
+        279.33
+      ]
+    },
+    {
+      "id": "vehicle-011",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        612.8,
+        369.11,
+        643.99,
+        403.51
+      ]
+    },
+    {
+      "id": "vehicle-012",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        669.57,
+        234.94,
+        698.92,
+        266.29
+      ]
+    },
+    {
+      "id": "vehicle-013",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        491.02,
+        454.4,
+        521.74,
+        489.52
+      ]
+    },
+    {
+      "id": "vehicle-014",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        605.17,
+        245.03,
+        623.78,
+        275.33
+      ]
+    },
+    {
+      "id": "vehicle-015",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        456.49,
+        389.77,
+        477.59,
+        427.78
+      ]
+    },
+    {
+      "id": "vehicle-016",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        506.14,
+        336.99,
+        525.42,
+        369.15
+      ]
+    },
+    {
+      "id": "vehicle-017",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        576.19,
+        331.0,
+        606.99,
+        364.89
+      ]
+    },
+    {
+      "id": "vehicle-018",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        591.86,
+        248.85,
+        611.1,
+        279.46
+      ]
+    },
+    {
+      "id": "vehicle-019",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        532.86,
+        311.1,
+        557.04,
+        347.65
+      ]
+    },
+    {
+      "id": "vehicle-020",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        402.56,
+        440.8,
+        429.38,
+        473.29
+      ]
+    },
+    {
+      "id": "vehicle-021",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        280.14,
+        324.01,
+        304.75,
+        351.45
+      ]
+    },
+    {
+      "id": "vehicle-022",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        736.47,
+        191.03,
+        763.23,
+        221.82
+      ]
+    },
+    {
+      "id": "vehicle-023",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        503.63,
+        479.99,
+        512.7,
+        496.82
+      ]
+    },
+    {
+      "id": "vehicle-024",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        298.58,
+        540.59,
+        326.67,
+        568.3
+      ]
+    },
+    {
+      "id": "vehicle-025",
+      "category": "vehicle",
+      "bbox_xyxy": [
+        576.79,
+        199.53,
+        608.23,
+        232.57
+      ]
+    }
+  ]
+}
